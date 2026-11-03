@@ -662,7 +662,7 @@ dialog#ccg{width:min(600px,calc(100vw - 32px));max-height:calc(100dvh - 32px);ov
       <button class="ni" type="button" data-sheet="hp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.7.4-1 .9-1 1.7M12 17h.01"/></svg><span>Help</span></button>
     </div>
     <div class="side-foot">
-      <span class="conns" id="conns" role="group" aria-label="Connections"></span><span id="ivcnt" hidden></span>
+      <span class="conns" id="conns" role="group" aria-label="Connections" hidden></span><span id="ivcnt" hidden></span>
       <button class="linkbtn" type="button" id="onb-open">Welcome tour</button>
       <div class="pepc"><label class="sw"><input type="checkbox" id="pep-on" checked><span>Hourly pep talk</span></label><button class="btn" id="pep-now" type="button">Send one</button></div>
       <div class="theme" role="group" aria-label="Theme"><button type="button" data-theme-set="auto" aria-pressed="true">Auto</button><button type="button" data-theme-set="light" aria-pressed="false">Light</button><button type="button" data-theme-set="dark" aria-pressed="false">Dark</button></div>
@@ -1427,7 +1427,7 @@ function renderIvCard(){
 const SETTINGS="https://claude.ai/settings/connectors";
 const CONNS=[
  {k:"gmail",label:"Gmail",match:/gmail/i,acct:"Google",use:"Reads your job emails (confirmations, rejections, interview invitations) so the tracker stays current. This page asks for read tools only.",extra:""},
- {k:"slack",label:"Slack",match:/slack/i,acct:"Slack workspace",use:"Reads job channels in design communities you have joined. This page asks for read tools only.",extra:"Some workspaces require an admin to approve the Slack app before it connects."},
+ {k:"slack",label:"Slack",match:/slack/i,acct:"Slack workspace",use:"Reads job channels in communities you have joined. This page asks for read tools only.",extra:"Some workspaces require an admin to approve the Slack app before it connects."},
  {k:"drive",label:"Drive",match:/drive/i,acct:"Google",use:"Reads résumé and portfolio files from your Google Drive. This page asks for read tools only.",extra:""}
 ];
 const connState={};
@@ -1439,7 +1439,8 @@ function renderConns(){
 async function checkConns(){
   let mcp=null,perm=null;
   try{if(window.claude){mcp=await window.claude.use("mcp");perm=await window.claude.use("permissions")}}catch(e){}
-  if(!mcp){CONNS.forEach(c=>connState[c.k]={s:"unk",why:"This view can't check connections. Open the page inside claude.ai."});renderConns();return}
+  if(!mcp){const cw=$("conns");if(cw)cw.hidden=true;return}
+  {const cw=$("conns");if(cw)cw.hidden=false}
   let list=[];try{list=((await mcp.listTools()).servers)||[]}catch(e){}
   for(const c of CONNS){
     const sv=list.find(x=>c.match.test(x.server)&&x.kind!=="artifact");
@@ -2401,20 +2402,20 @@ document.addEventListener("visibilitychange",pepTick);
 pepTick();
 
 /* ---------- Claude Code starter guide ---------- */
-const CCG_DOCS="https://docs.claude.com/en/docs/claude-code/overview";
+const CCG_DOCS="https://code.claude.com/docs/en/overview";
 function renderCcg(){
   const cmd=(c,id)=>`<div class="ccg-cmd"><code>${esc(c)}</code><button class="btn" type="button" data-ccgcopy="${esc(c)}">Copy</button></div>`;
-  $("ccg-body").innerHTML=`<p class="lede" style="margin:0 0 14px">Claude Code is an app you install on your computer. It works inside a folder. You type what you want in plain English, it reads and writes files in that folder, and it asks before it changes anything. It needs a Claude subscription.</p>
+  $("ccg-body").innerHTML=`<p class="lede" style="margin:0 0 14px">Claude Code is an app you install on your computer. It works inside a folder. You type what you want in plain English, it reads and writes files in that folder, and it asks before it changes anything. It needs a paid Claude plan (or a Claude Console account).</p>
   <ol class="ccg-steps">
-   <li><b>Install it.</b> Needs Node.js 18 or newer on your computer. Open Terminal (Mac) or PowerShell (Windows) and run:${cmd("npm install -g @anthropic-ai/claude-code")}<span class="rnote">Other ways to install are in the <a href="${CCG_DOCS}" target="_blank" rel="noopener noreferrer">official guide</a>.</span></li>
-   <li><b>Get the project folder.</b> Clone the repository or download it as a ZIP, and put the <code>feed-the-fam-tracker</code> folder somewhere easy, like your Home folder.</li>
-   <li><b>Open Terminal in that folder.</b> Mac or Linux:${cmd("cd ~/feed-the-fam-tracker")}On Windows use <code>cd %USERPROFILE%\\feed-the-fam-tracker</code>.</li>
+   <li><b>Install it.</b> Open Terminal (Mac, Linux) or PowerShell (Windows) and run the installer for your system. Mac or Linux:${cmd("curl -fsSL https://claude.ai/install.sh | bash")}Windows PowerShell:${cmd("irm https://claude.ai/install.ps1 | iex")}<span class="rnote">Prefer npm? It needs Node.js 22 or newer: <code>npm install -g @anthropic-ai/claude-code</code>. More options are in the <a href="${CCG_DOCS}" target="_blank" rel="noopener noreferrer">official guide</a>.</span></li>
+   <li><b>Get the project folder.</b> Clone the repository or download it as a ZIP, and name the folder <code>job-search</code>, somewhere easy like your Home folder. The prompts in this page use that name.</li>
+   <li><b>Open Terminal in that folder.</b> Mac or Linux:${cmd("cd ~/job-search")}On Windows use <code>cd %USERPROFILE%\\job-search</code>.</li>
    <li><b>Start Claude Code and sign in.</b>${cmd("claude")}<span class="rnote">The first time, it opens your browser so you can sign in with your Claude account.</span></li>
    <li><b>Paste a prompt and press Enter.</b> The prompts from the tour are written for this. When it wants to create or change a file, it asks first: choose <i>Yes</i> to let it, or <i>No</i> to stop.</li>
    <li><b>Come back here.</b> Claude Code writes your roles and grades into the folder. Ask it to rebuild and republish the page, and your new roles appear in this tracker.</li>
   </ol>
   <details class="ccg-more"><summary>If something goes wrong</summary><ul>
-   <li><b>"command not found: npm"</b>: install Node.js from nodejs.org, then reopen Terminal.</li>
+   <li><b>If you used npm and see "command not found: npm"</b>: install Node.js 22 or newer from nodejs.org, then reopen Terminal. Or use the installer in step 1 instead.</li>
    <li><b>"command not found: claude"</b>: close and reopen Terminal, then try again.</li>
    <li><b>Not sure what to do?</b> Start Claude Code in the folder and ask: <i>"What can you do in this folder, and what should I do first?"</i></li>
    <li><b>It did something you didn't want:</b> say <i>"undo that"</i>. The prompts make a backup copy of your list before changing it.</li></ul></details>

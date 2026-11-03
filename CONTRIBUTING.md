@@ -13,6 +13,7 @@ Code review is welcome. Good pull requests:
 - Fix a bug, improve wording, or make a part easier to understand.
 - Add something that helps other roles (new rubric examples, new Build idea examples, translations).
 - Stay small and say what changed and why.
+- Pass the tests: run `python3 tools/tests/run_tests.py` (needs Python 3, Node.js 22 or newer, and Google Chrome).
 
 ## Privacy first
 

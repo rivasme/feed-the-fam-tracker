@@ -32,14 +32,15 @@ Two parts do different jobs:
 ## What you need
 
 - A Claude account (the AI parts of the page run on your own subscription).
-- [Claude Code](https://docs.claude.com/en/docs/claude-code/overview) for searching and bulk grading. It is optional, and the page has a built-in "New to Claude Code?" guide.
+- [Claude Code](https://code.claude.com/docs/en/overview) for searching and bulk grading. It needs a paid Claude plan (or a Claude Console account). It is optional for tracking, and the page has a built-in "New to Claude Code?" guide.
 - Python 3 and Git (both are standard on a Mac).
+- To run the tests you also need Node.js 22 or newer and Google Chrome (`python3 tools/tests/run_tests.py`).
 
 The tracker itself is free. The AI runs on your Claude account, so that part has whatever cost your plan has.
 
 ## Quick start
 
-1. Get the code into a folder called `job-search` in your home folder:
+1. Get the code into a folder called `job-search` in your home folder (the page's built-in prompts use that name, so keeping it avoids confusion; another name works too):
    ```bash
    git clone https://github.com/rivasme/feed-the-fam-tracker.git ~/job-search
    cd ~/job-search
@@ -49,7 +50,7 @@ The tracker itself is free. The AI runs on your Claude account, so that part has
    claude
    ```
 3. Ask it: *"Build the tracker page with `python3 tracker-app/build.py` and publish it as an Artifact. Give me the link."*
-   If your Claude Code can't publish Artifacts, build a local copy with `python3 tracker-app/build.py tracker.html` and open it in your browser. A local copy is good for tracking, but the in-page AI features need the page to run inside Claude.
+   If your Claude Code can't publish Artifacts, build a local copy with `python3 tracker-app/build.py tracker.html` and open it in your browser. A local copy is good for tracking, but it **loses the in-page AI features** (grading, tailoring, the Assistant), because those need the page to run inside Claude.
 4. Open the page. A short welcome tour asks for your name, your résumé (upload a PDF, Word or text file, or paste it), and what you want. It then gives you copy-ready prompts for Claude Code.
 5. Add your first role and let the grading do its thing.
 
@@ -88,4 +89,4 @@ This summary is not legal advice. The LICENSE file is what counts.
 
 ## Credits
 
-Built by [David Rivas](https://www.iamdavidrivas.com) with [Claude Code](https://docs.claude.com/en/docs/claude-code/overview). David is a designer who does not write code by hand: he directs Claude Code and reviews what it makes.
+Built by [David Rivas](https://www.iamdavidrivas.com) with [Claude Code](https://code.claude.com/docs/en/overview). David is a designer who does not write code by hand: he directs Claude Code and reviews what it makes.

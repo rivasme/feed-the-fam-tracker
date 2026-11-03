@@ -39,3 +39,8 @@
 `python3 tools/merge_crawl.py new-crawlN YYYY-MM-DD` reads `new-crawlN/results/*.tsv` (tab separated) with this header:
 `company, title, apply_link, posted_pay, level, employment_type, remote_terms, years_required, education_language, fit_score_10, date_checked, role_file, source_found_on`.
 It skips roles already in the CSV, copies role files into `roles/`, checks each link, flags a hard degree requirement in the note, and writes a backup of your CSV to `logs/` first.
+
+Two things to know:
+
+- `role_file` in the TSV is a path **from the repo root** (for example `new-crawl1/roles/acme--senior-analyst.md`), and the file must already exist. The merge copies it into `roles/`.
+- A link that fails the check (a 404, say) is **still merged**. The HTTP status is written into the role's note so you can decide what to do.
