@@ -1,5 +1,7 @@
 # Feed the Fam Tracker
 
+![Feed the Fam Tracker: a free job-search tracker. Free, not for sale, make it yours.](docs/social-preview.png)
+
 A free job-search tracker I built while I was looking for work. It keeps every role in one place, grades each one honestly, and helps with the next step. **It is not for sale, and it never will be.** Take it, change it, make it fit your role.
 
 > I got laid off. My neighbors and my community are going through the same thing, and the not-knowing is its own kind of stress. I'm not going to charge anyone for help.
