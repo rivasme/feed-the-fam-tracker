@@ -1,0 +1,48 @@
+name: How it went
+description: Tell me what worked, what broke, and what you changed.
+title: "How it went: "
+labels: ["how-it-went"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for trying Feed the Fam Tracker. This is the closest thing to a review on GitHub, and it helps the next person.
+        **Please do not include your résumé, contact details, employers you applied to, or any real application data.**
+  - type: input
+    id: role
+    attributes:
+      label: What role or field did you use it for?
+      placeholder: "e.g. backend engineer, product manager, data analyst, nurse, teacher"
+  - type: dropdown
+    id: how
+    attributes:
+      label: How did you run it?
+      options:
+        - Published as a Claude Artifact (in-page AI features worked)
+        - Local HTML file only (tracking without in-page AI)
+        - Used Claude Code for crawling and grading
+        - Not sure
+    validations:
+      required: true
+  - type: textarea
+    id: worked
+    attributes:
+      label: What worked?
+    validations:
+      required: true
+  - type: textarea
+    id: broke
+    attributes:
+      label: What broke or confused you?
+  - type: textarea
+    id: changed
+    attributes:
+      label: What did you change to fit your role?
+      description: Gates, rubric, Build ideas, pep talks, anything.
+  - type: checkboxes
+    id: privacy
+    attributes:
+      label: Privacy
+      options:
+        - label: I removed personal information from this report.
+          required: true

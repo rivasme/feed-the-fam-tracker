@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Show and tell
+    url: https://github.com/rivasme/feed-the-fam-tracker/discussions/categories/show-and-tell
+    about: Share the version you made for your role.
+  - name: Questions
+    url: https://github.com/rivasme/feed-the-fam-tracker/discussions/categories/q-a
+    about: Ask how something works.

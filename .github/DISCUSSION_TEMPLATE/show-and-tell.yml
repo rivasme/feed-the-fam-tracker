@@ -1,0 +1,29 @@
+title: "I made it for: "
+labels: ["show-and-tell"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Show us what you made. Other people searching in your field can start from your version.
+        **Please do not share your résumé, contact details or real application data.**
+  - type: input
+    id: role
+    attributes:
+      label: Which role or field is it for?
+    validations:
+      required: true
+  - type: textarea
+    id: changed
+    attributes:
+      label: What did you change?
+      description: Gates, grading rubric, Build ideas, pep talks, layout, anything.
+    validations:
+      required: true
+  - type: textarea
+    id: learned
+    attributes:
+      label: What worked, and what would you tell the next person?
+  - type: input
+    id: link
+    attributes:
+      label: Link to your fork (optional)

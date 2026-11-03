@@ -1,0 +1,23 @@
+{
+  "first": "Maria",
+  "last": "Lopez",
+  "titles": ["Data Analyst", "BI Analyst"],
+  "levels": ["Senior"],
+  "remote": "Hybrid or remote",
+  "city": "Austin, TX",
+  "min": 90,
+  "target": 110,
+  "types": ["Full-time"],
+  "avoid": "no crypto",
+  "start": "2026-10-01",
+  "facts": ["Six years of SQL and Tableau work across finance and operations teams."],
+  "dont": ["a degree beyond the one listed in the résumé", "managing people", "any number that is not in the résumé"],
+  "axes": [
+    ["SQL", 4.5, "Daily use for six years.", "SQL"],
+    ["Dashboards", 4, "Weekly Tableau dashboards for finance.", "Dashboards"],
+    ["Python", 2.5, "Light scripting only.", "Python"]
+  ],
+  "strengths": [["SQL and Tableau", "Six years of daily use.", "Asked for in 70% of postings."]],
+  "gaps": [["No dbt experience", "Not documented.", "Flagged on 20% of roles."]],
+  "pageUrl": ""
+}

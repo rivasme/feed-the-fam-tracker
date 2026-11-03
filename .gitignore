@@ -1,0 +1,28 @@
+# Your own job-search data stays on your computer. Never commit it.
+tracker.csv
+roles/*
+!roles/.gitkeep
+logs/*
+!logs/.gitkeep
+new-crawl*/
+resume/
+profile/profile.json
+profile/*.md
+!profile/*.template.md
+grading/profile.md
+tracker-app/grades*.json
+tracker-app/out/
+*.pdf
+*.docx
+*.pages
+
+# Build output and local scratch
+dist/
+*.built.html
+
+# OS and editor files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+node_modules/
