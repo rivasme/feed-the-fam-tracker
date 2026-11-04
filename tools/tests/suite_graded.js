@@ -20,6 +20,19 @@
     ok("detail has Tailor, Letter and Ask buttons", !!$("[data-tailor]") && !!$("[data-cover]") && !!$("[data-ask]"));
     $("[data-tailor]").click();
     ok("without a résumé, Tailor asks for one instead of failing", /Add your résumé first/.test($("#trbody").textContent)); $("#shclose").click();
+    // "Apply now" badge goes away once a role is applied to
+    {
+      const r0 = ROLES[0], badges = () => $$("#list .pc .badge.gr, #list .head .badge.gr").map(b => b.textContent).join("|");
+      ok("fixture role is graded Apply now and not yet applied", decisionOf(r0) === "apply" && statusOf(r0.id) === "new" && /Apply now/.test(badges()), badges());
+      const sel = $("[data-k=status]"); sel.value = "applied"; sel.dispatchEvent(new Event("change", { bubbles: true }));
+      await new Promise(r => setTimeout(r, 300));
+      ok("status is now Applied", statusOf(r0.id) === "applied");
+      ok("Apply now badge is hidden on the card and the detail header after applying", !/Apply now/.test(badges()), badges());
+      ok("the grade still shows Fit and Opportunity", /Fit/.test($("#list .score").textContent) && /Opportunity/.test($("#list .score").textContent));
+      const sel2 = $("[data-k=status]"); sel2.value = "new"; sel2.dispatchEvent(new Event("change", { bubbles: true }));
+      await new Promise(r => setTimeout(r, 300));
+      ok("badge comes back when the role is set back to Not applied", /Apply now/.test(badges()), badges());
+    }
     // KPI filters
     $("[data-v=overview]").click();
     ok("Overview KPI cards are display-only", $$("#stats .stat").length === 9 && $$("#stats button").length === 0);

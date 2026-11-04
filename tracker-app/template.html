@@ -1031,7 +1031,7 @@ const gradeBadge=r=>{
   const v=evOf(r);
   if(!v){const o=gradeData(r);return o&&o.o?`<span class="badge" title="From the old system. Regrade to get a decision.">Old grade ${esc(o.o)} (migrated)</span>`:""}
   const d=decisionOf(r),D=DECS[d],ov=d!==v.decision;
-  return `<span class="badge gr" style="--c:var(${D[2]})" title="Decision">${D[1]} ${D[0]}${ov?" (overridden)":""}</span>`+
+  return (hideApplyBadge(r)?"":`<span class="badge gr" style="--c:var(${D[2]})" title="Decision">${D[1]} ${D[0]}${ov?" (overridden)":""}</span>`)+
    (d==="unrated"?"":`<span class="badge" title="Fit: can you win it. Opportunity: is it worth having.">Fit <b>${v.fit}</b> · Opportunity <b>${v.opp}</b></span><span class="badge" title="How sure the grade is">Confidence: ${v.conf}</span>`)+
    (legitOf(r).length?`<span class="badge" style="color:var(--c-interview);border-color:color-mix(in srgb,var(--c-interview) 45%,var(--border))" title="The posting has details worth a second look">Check this posting</span>`:"");
 };
@@ -1278,7 +1278,7 @@ function renderList(){
   document.querySelectorAll("#tabs .tab").forEach(b=>b.setAttribute("aria-selected",String(b.dataset.t===state.tier)));
   $("sortwrap").hidden=state.tier!=="0";$("sort").value=state.sort;
   const q=state.q.toLowerCase();
-  const vis=roles.filter(r=>(state.filter==="all"||(state.filter==="iv"?hasIv(r.id):state.filter==="noreply"?noReply(r):statusOf(r.id)===state.filter))&&(state.tier==="0"||bucket(r)===state.tier)&&(!q||(r.co+" "+r.title).toLowerCase().includes(q)));
+  const vis=roles.filter(r=>(state.filter==="all"||(state.filter==="iv"?hasIv(r.id):state.filter==="noreply"?noReply(r):statusOf(r.id)===state.filter))&&(state.tier==="0"||(bucket(r)===state.tier&&!(state.tier==="apply"&&hideApplyBadge(r))))&&(!q||(r.co+" "+r.title).toLowerCase().includes(q)));
   vis.sort(state.tier==="0"&&state.sort==="pay"?(a,b)=>(payOf(b)-payOf(a))||(gradeKey(b)-gradeKey(a)):(a,b)=>(gradeKey(b)-gradeKey(a))||(payOf(b)-payOf(a)));
   const PL=$("plist"),L=$("list");
   if(!vis.length){PL.innerHTML=roles.length?`<div class="empty">No roles match. Clear the filter or search.</div>`:`<div class="empty" style="text-align:left;padding:8px 4px"><b style="display:block;font-size:17px;margin-bottom:6px">No roles yet</b><p class="rnote" style="margin:0 0 12px">Add a role you found by link, pasted description or by hand, or let Claude Code search the job boards for you.</p><div class="ctl"><button class="btn pri" type="button" data-emptyadd="1">Add a role</button><button class="btn" type="button" data-sheet="hp">How do I find roles?</button></div></div>`;L.innerHTML="";return}
@@ -1307,7 +1307,9 @@ const tagRow=(r,s)=>{
   return t.length?`<div class="tags">${t.join("")}</div>`:"";
 };
 const miniChips=r=>{const v=evOf(r);if(!v||decisionOf(r)==="unrated"||!v.fit)return "";return `<span class="mc" style="--c:var(${lc(v.fit)})" title="Fit"><small>Fit</small>${v.fit}</span><span class="mc" style="--c:var(${lc(v.opp)})" title="Opportunity"><small>Opp</small>${v.opp||"–"}</span>`};
-const decPill=r=>{const D=DECS[decisionOf(r)]||DECS.unrated;return `<span class="badge gr" style="--c:var(${D[2]})">${D[1]} ${D[0]}</span>`};
+/* "Apply now" only makes sense before you apply: hide that badge once a role has any other status */
+const hideApplyBadge=r=>decisionOf(r)==="apply"&&statusOf(r.id)!=="new";
+const decPill=r=>{if(hideApplyBadge(r))return "";const D=DECS[decisionOf(r)]||DECS.unrated;return `<span class="badge gr" style="--c:var(${D[2]})">${D[1]} ${D[0]}</span>`};
 const previewCard=r=>{const s=statusOf(r.id),sc=SMAP[s];return `<button class="pc" type="button" data-sel="${esc(r.id)}" aria-current="${r.id===state.sel}">
   <div class="r1"><span class="co">${esc(r.co)}</span>${decPill(r)}</div>
   <div class="ti">${esc(r.title)}</div>
