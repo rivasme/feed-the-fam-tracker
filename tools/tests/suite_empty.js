@@ -5,7 +5,10 @@
     await until(() => $("#onb").open, 4000);
     $("[data-v=list]").click();
     ok("zero roles: Listings shows a helpful empty state, not an error", allRoles().length === 0 && /No roles yet/.test($("#plist").textContent) && !!$("#plist [data-emptyadd]") && !!$("#plist [data-sheet=hp]"));
-    $("#plist [data-emptyadd]").click(); ok("empty-state button opens Add a role", $("#dlg").open); $("#a-cancel").click(); $("[data-v=overview]").click();
+    $("#plist [data-emptyadd]").click(); ok("empty-state button opens Add a role", $("#dlg").open); $("#a-cancel").click();
+    ok("empty state offers Crawl for roles first", !!$("#plist [data-emptycrawl]") && $("#sub").textContent === "No roles yet.");
+    $("#plist [data-emptycrawl]").click(); ok("empty-state Crawl button opens the Crawl dialog", $("#crawl").open); $("#crx").click();
+    $("[data-v=overview]").click();
     ok("tour opens on its own the first time", $("#onb").open);
     ok("tour says it never fills out or submits applications", /never fills out or submits an application for you\. You still apply yourself/.test($("#onb-body").textContent));
     ok("no personal data in the starter (no preset name)", !bad.test(document.body.innerHTML.replace(/<script[\s\S]*?<\/script>/g, "")));
@@ -113,6 +116,54 @@
     $("[data-sheet=hp]").click();
     ok("Help says it never fills out or submits applications", /never fills out or submits an application for you/.test($("#hpbody").textContent) && !/~\/job-search/.test($("#hpbody").textContent));
     ok("Help has the Claude Code guide link", !!$("#hpbody [data-ccg]")); $("#shclose").click();
+
+    // --- global top bar and the Crawl dialog ---
+    {
+      const views = { overview: "Overview", list: "Listings", str: "Strengths & Gaps", res: "Resume", chat: "Assistant" };
+      ok("top bar title follows the page", Object.entries(views).every(([v, t]) => ($("[data-v=" + v + "]").click(), $("#tbt").textContent === t)));
+      $("[data-v=overview]").click();
+      ok("top bar holds search, Add a role, Crawl and the menu", !!$("#topbar #q") && !!$("#topbar #add") && !!$("#topbar #crawlbtn") && !!$("#topbar #tbmore") && !$("#tab-list #q") && !$("#tab-list #add"));
+      ok("a build with no crawl log says it has not crawled yet", /Not crawled yet/.test($("#tblast").textContent) && $("#tblast").dataset.stale === "0");
+      ok("Crawl opens and closes from every page", Object.keys(views).every(v => { $("[data-v=" + v + "]").click(); $("#crawlbtn").click(); const o = $("#crawl").open; $("#crx").click(); return o && !$("#crawl").open; }));
+      $("[data-v=overview]").click(); $("#add").click(); ok("Add a role opens from Overview", $("#dlg").open); $("#a-cancel").click();
+      $("#crawlbtn").click();
+      const P = () => $("#cq-pre").textContent;
+      ok("default prompt covers job boards, Gmail and Slack, read-only", /Job boards/.test(P()) && /Gmail \(read-only connector\)/.test(P()) && /Slack \(read-only connector\)/.test(P()) && /never send, reply, forward, label, delete, react or post/.test(P()) && /never fills out or submits an application/.test(P()));
+      ok("prompt carries the profile criteria and no personal data", /Austin, TX/.test(P()) && !bad.test(P()));
+      ok("with no crawl logged the window is 30 days", /in the last 30 days/.test(P()) && $("#cq-w-since").textContent === "Last 30 days");
+      $("#crawl [data-src=gmail]").click();
+      ok("unchecking Gmail takes it out of the prompt", !/Gmail \(read-only/.test(P()) && /Slack \(read-only/.test(P()));
+      $("#crawl [data-win='24h']").click();
+      ok("the time window changes the prompt", /in the last 24 hours/.test(P()) && $("#crawl [data-win='24h']").getAttribute("aria-checked") === "true");
+      setVal("#cq-slack", "#jobs, #leads"); setVal("#cq-other", "Google Drive");
+      ok("Slack channels and other connectors reach the prompt", /these channels \(#jobs, #leads\)/.test(P()) && /Google Drive/.test(P()) && /Lane: other/.test(P()));
+      ok("choices are remembered for next time", (() => { try { const o = JSON.parse(localStorage.getItem("jt-crawl-opts")); return o.win === "24h" && o.gmail === false && o.slackCh === "#jobs, #leads"; } catch (e) { return false; } })());
+      $("#crawl [data-src=boards]").click(); $("#crawl [data-src=slack]").click(); setVal("#cq-other", "");
+      ok("with nothing chosen the prompt is empty and Copy is disabled", $("#cq-copy").disabled && /Pick at least one/.test(P()));
+      $("#crawl [data-src=boards]").click();
+      ok("job boards alone gives the same text as the Help crawl prompt", !$("#cq-copy").disabled && crawlPrompt({ when: "since [DATE]" }) === taskById("crawl").prompt && !/Gmail|Slack/.test(taskById("crawl").prompt));
+      $("#crx").click();
+      Object.assign(cq, { boards: true, gmail: true, slack: true, slackCh: "", otherTxt: "", win: "since" }); cqSave();
+      // search from any page
+      $("[data-v=overview]").click(); setVal("#q", "Beta");
+      ok("search from Overview jumps to Listings and filters", state.view === "list" && $$("#plist .pc").length === 1 && /Beta Inc/.test($("#plist").textContent));
+      ok("the search shows as one chip, and Clear all appears only with two or more filters", /Search: \u201cBeta\u201d/.test($("#fbar").textContent) && !$("#fbar [data-clear=all]") && /1 of 3 roles/.test($("#fbar").textContent));
+      ok("tab counts follow the search", $("#tabs [data-t=none]").textContent === "Not Rated1" && $("#tabs [data-t='0']").textContent === "Any match1");
+      setVal("#q", "");
+      // more menu
+      $("#tbmore").click();
+      ok("more menu opens with the tour and the theme switch", !$("#tbmenu").hidden && $("#tbmore").getAttribute("aria-expanded") === "true" && !!$("#tbmenu #onb-open") && $$("#tbmenu [data-theme-set]").length === 3);
+      ok("the menu is Settings, with a gear icon", $("#tbmore").getAttribute("aria-label") === "Settings" && !!$("#tbmore svg circle[r='3']") && !$("#tbmore svg circle[r='1.6']"));
+      ok("Send one lives in Settings, not in the sidebar, and the hourly switch stays", !!$("#tbmenu #pep-now") && !$(".sidebar #pep-now") && !!$(".sidebar #pep-on") && !/Send one/.test($(".sidebar").textContent));
+      $("#pep-now").click();
+      ok("Send me one now opens a pep talk and closes the menu", $("#pep").open && $("#tbmenu").hidden); $("#pep-x").click();
+      $("#tbmore").click();
+      document.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape", bubbles: true }));
+      ok("Escape closes the menu", $("#tbmenu").hidden && $("#tbmore").getAttribute("aria-expanded") === "false");
+      $("#tbmore").click(); $("#onb-open").click();
+      ok("Welcome tour opens from the menu and the menu closes", $("#onb").open && $("#tbmenu").hidden); $("#onb-skip").click();
+      $("[data-v=overview]").click();
+    }
 
     // --- theme, guide, upload ---
     $("[data-theme-set=dark]").click(); ok("theme switch works", document.documentElement.dataset.theme === "dark"); $("[data-theme-set=auto]").click();

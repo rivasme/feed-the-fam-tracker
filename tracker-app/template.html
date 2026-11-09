@@ -454,7 +454,7 @@ dialog#dlg{width:min(540px,calc(100vw - 32px));max-height:calc(100dvh - 32px);ov
 .chat .chdock{margin-top:auto}
 .chat:has(.chhero:not([hidden])) .chhero{margin-top:auto}
 .chat:has(.chhero:not([hidden])) .chdock{margin-top:0;margin-bottom:auto;position:static;background:none}
-#add{margin-left:auto}.bar2{justify-content:flex-start}#q{flex:1 1 240px;max-width:none}
+.bar2{justify-content:flex-start}
 /* narrow screens: side nav becomes a top bar */
 @media (max-width:860px){
   .appshell{grid-template-columns:minmax(0,1fr)}
@@ -655,6 +655,112 @@ dialog h2,.sh2 h2,.h2{font-size:var(--fs-h2);font-weight:600;letter-spacing:-.02
 .pc .ti{font-size:var(--fs-sm)}
 .gbox h3,.gs h3,.bl h3,.trcard h3,.trdoc h3,.coh,.tlc>summary,.insw>summary,.cr>summary,#ivc>summary,#snip>summary{font-size:var(--fs-h3);font-weight:600;color:var(--foreground)}
 .gbox,.bl li,.ainote p,.bd p,.cr p,.cr ul,.hsteps,.ccg-steps,.ccg-more ul{font-size:var(--fs-body)}
+
+/* ===== Global top bar: page title, search, Add a role, Crawl, more menu ===== */
+:root{--mx:clamp(16px,3vw,40px)}
+.content{min-width:0;display:flex;flex-direction:column}
+.main{padding-top:20px}
+.topbar{position:sticky;top:0;z-index:15;background:var(--glass);-webkit-backdrop-filter:blur(28px) saturate(170%);backdrop-filter:blur(28px) saturate(170%);border-bottom:1px solid var(--border)}
+.tb-in{max-width:1320px;padding:12px var(--mx);display:flex;align-items:center;gap:16px}
+.tb-t{min-width:0;flex:1 1 auto}
+.tb-t h1{margin:0;font-size:var(--fs-h2);font-weight:700;letter-spacing:-.02em;line-height:1.2}
+.tb-t .sub{margin:2px 0 0;font-size:var(--fs-cap);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tb-r{display:flex;align-items:center;gap:8px;flex:none}
+.tb-r .in{height:34px}
+.tb-r #q{width:clamp(150px,17vw,250px);flex:none}
+.tb-last{font-size:var(--fs-cap);color:var(--muted-foreground);white-space:nowrap;display:inline-flex;align-items:center;gap:6px;margin:0 2px 0 6px}
+.tb-last[data-stale="1"]::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--c-interview);flex:none}
+.btn.crawl svg{width:16px;height:16px;flex:none}
+.iconbtn{width:34px;padding:0}
+.iconbtn svg{width:18px;height:18px}
+.tb-menu{position:relative}
+.menu{position:absolute;right:0;top:calc(100% + 8px);min-width:220px;display:flex;flex-direction:column;gap:4px;padding:8px;background:var(--popover);border:1px solid var(--border);border-radius:14px;box-shadow:0 18px 50px rgba(0,0,0,.28);z-index:40}
+.menu[hidden]{display:none}
+.menu .lab{font-size:var(--fs-micro);font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted-foreground);padding:8px 8px 2px}
+.mi{appearance:none;border:0;background:transparent;text-align:left;font:inherit;font-size:var(--fs-body);font-weight:500;color:var(--foreground);padding:8px 8px;border-radius:9px;cursor:pointer}
+.mi:hover{background:var(--accent)}
+.mi:focus-visible{outline:none;box-shadow:0 0 0 3px color-mix(in srgb,var(--ring) 35%,transparent)}
+#sortwrap{margin-left:auto}
+/* crawl dialog */
+dialog#crawl{width:min(580px,calc(100vw - 32px));max-height:calc(100dvh - 32px);overflow:auto}
+.cq-lede{margin:0 0 14px;font-size:var(--fs-sm);color:var(--muted-foreground)}
+.cq-f{border:0;padding:0;margin:0 0 14px;min-width:0}
+.cq-f legend{padding:0;margin:0 0 8px;font-size:var(--fs-cap);font-weight:600;letter-spacing:.02em;color:var(--muted-foreground)}
+.cq-opt{display:flex;gap:10px;align-items:flex-start;padding:10px 12px;margin:0 0 8px;border:1px solid var(--border);border-radius:14px;background:var(--card);cursor:pointer}
+.cq-opt:has(input[type=checkbox]:checked){border-color:color-mix(in srgb,var(--primary) 45%,var(--border));background:color-mix(in srgb,var(--primary) 7%,var(--card))}
+.cq-opt input[type=checkbox]{margin:3px 0 0;width:16px;height:16px;accent-color:var(--primary);flex:none}
+.cq-sp{width:16px;flex:none}
+.cq-body{flex:1;min-width:0}
+.cq-body label{display:block;cursor:pointer}
+.cq-opt b{display:block;font-size:var(--fs-body);font-weight:600}
+.cq-opt small{display:block;font-size:var(--fs-cap);color:var(--muted-foreground);margin-top:1px}
+.cq-opt .in{margin-top:8px;height:32px}
+.cq-seg{display:flex;gap:2px;padding:3px;background:var(--muted);border-radius:12px}
+.cq-seg button{flex:1;appearance:none;border:0;background:transparent;color:var(--muted-foreground);font:inherit;font-size:var(--fs-sm);font-weight:500;padding:6px 8px;border-radius:9px;cursor:pointer}
+.cq-seg button:hover{color:var(--foreground)}
+.cq-seg button[aria-checked="true"]{background:var(--popover);color:var(--foreground);box-shadow:0 1px 3px rgba(0,0,0,.16)}
+.cq-seg button:focus-visible{outline:none;box-shadow:0 0 0 3px color-mix(in srgb,var(--ring) 35%,transparent)}
+#cq-pre{margin:0;white-space:pre-wrap;overflow-wrap:anywhere;font-family:var(--font-data);font-size:var(--fs-cap);line-height:1.5;background:var(--muted);border-radius:12px;padding:10px 12px;max-height:120px;overflow:auto}
+.cq-foot{position:sticky;bottom:-24px;margin:12px -24px -24px;padding:12px 24px 16px;background:var(--popover);border-top:1px solid var(--border);display:flex;gap:10px 14px;align-items:center;flex-wrap:wrap}
+.cq-foot .grow{flex:1 1 auto;display:flex;gap:14px;flex-wrap:wrap}
+.cq-foot .btn:disabled{opacity:.5;cursor:not-allowed}
+@media (min-width:1001px){
+  .tb-in{min-height:68px}
+  .main.lm{height:calc(100vh - var(--stickh,0px))}
+  .chatwrap{min-height:calc(100vh - var(--stickh,0px) - 100px)}
+}
+.plist{top:calc(var(--stickh,0px) + 16px);max-height:calc(100vh - var(--stickh,0px) - 32px)}
+@media (max-width:1100px){.tb-last{display:none}.tb-r #q{width:150px}}
+@media (max-width:1000px){
+  .tb-in{flex-wrap:wrap;gap:10px 16px}
+  .tb-t{flex:1 1 100%}
+  .tb-r{flex:1 1 100%;flex-wrap:wrap}
+  .tb-r #q{flex:1 1 100%;width:auto;order:-1}
+  .tb-r .crawl{flex:1 1 auto}
+}
+@media (max-width:860px){.topbar{position:static}.tb-in{padding-block:12px 4px}}
+
+/* ===== Listings filters: Status cards, Match tabs, active-filters line ===== */
+.frow{display:flex;align-items:center;justify-content:space-between;gap:8px 12px;flex-wrap:wrap;margin-bottom:-8px}
+.flab{font-size:var(--fs-micro);font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted-foreground)}
+.subf{display:flex;align-items:center;gap:6px;flex-wrap:wrap;font-size:var(--fs-cap);color:var(--muted-foreground)}
+.schip{appearance:none;display:inline-flex;align-items:center;gap:6px;border:1px solid var(--border);background:var(--card);color:var(--foreground);font:inherit;font-size:var(--fs-cap);font-weight:500;line-height:20px;padding:1px 10px;border-radius:9999px;cursor:pointer}
+.schip b{font-weight:600;font-variant-numeric:tabular-nums}
+.schip:hover{background:var(--accent)}
+.schip[aria-pressed="true"]{border-color:var(--primary);background:color-mix(in srgb,var(--primary) 12%,transparent);color:var(--primary)}
+.schip:focus-visible{outline:none;box-shadow:0 0 0 3px color-mix(in srgb,var(--ring) 35%,transparent)}
+.mgrp{display:flex;align-items:center;gap:10px;flex-wrap:wrap;min-width:0}
+.tn{margin-left:6px;font-size:var(--fs-micro);font-weight:600;font-variant-numeric:tabular-nums;color:var(--muted-foreground)}
+.tab[aria-selected="true"] .tn{color:var(--foreground)}
+.tab.zero:not([aria-selected="true"]){opacity:.5}
+.stat.zero:not([aria-pressed="true"]){opacity:.55}
+.fbar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;min-height:28px;margin-top:-6px;font-size:var(--fs-sm);color:var(--muted-foreground)}
+.fbar .fcount b{color:var(--foreground);font-variant-numeric:tabular-nums}
+.fchip{appearance:none;display:inline-flex;align-items:center;gap:6px;border:1px solid color-mix(in srgb,var(--primary) 38%,var(--border));background:color-mix(in srgb,var(--primary) 10%,transparent);color:var(--foreground);font:inherit;font-size:var(--fs-cap);font-weight:500;line-height:20px;padding:1px 10px;border-radius:9999px;cursor:pointer}
+.fchip:hover{background:color-mix(in srgb,var(--primary) 18%,transparent)}
+.fchip:focus-visible{outline:none;box-shadow:0 0 0 3px color-mix(in srgb,var(--ring) 35%,transparent)}
+
+/* ===== Role detail: Status field, helper actions, one primary action; matching note cards ===== */
+.dbar{display:flex;align-items:flex-end;gap:10px 14px;flex-wrap:wrap;padding-top:14px;border-top:1px solid var(--border)}
+.dstat{display:flex;flex-direction:column;gap:5px;flex:none}
+.dstat select{width:168px}
+.dstat{order:1}
+.dacts{display:flex;gap:6px;flex-wrap:wrap;align-items:center;flex:1 1 100%;order:3}
+.dbar .btn{height:36px}
+.dacts .btn{background:transparent;border:1px solid var(--border);font-weight:500}
+.dacts .btn:hover{background:var(--accent)}
+.dopen{margin-left:auto;gap:8px;order:2}
+.dopen svg{width:14px;height:14px;flex:none}
+.notes2{align-items:stretch}
+.ncard{display:flex;flex-direction:column;gap:6px;min-width:0;border-radius:14px;padding:10px 12px}
+.ncard .nh{display:flex;justify-content:space-between;align-items:center;gap:8px;min-height:20px;font-size:var(--fs-cap);font-weight:600;color:var(--muted-foreground)}
+.ncard .ro{font-size:var(--fs-micro);font-weight:500;border:1px solid var(--border);border-radius:9999px;padding:0 8px;line-height:18px;white-space:nowrap}
+.ncard.ainote p{margin:0}
+.mynote{border:1px solid var(--input);background:var(--card)}
+.mynote:focus-within{border-color:var(--ring);box-shadow:0 0 0 3px color-mix(in srgb,var(--ring) 30%,transparent)}
+.mynote textarea{flex:1;width:100%;min-height:84px;border:0;background:transparent;box-shadow:none;padding:0;margin:0;resize:vertical;font:inherit;font-size:var(--fs-body);line-height:1.5;color:var(--foreground);outline:none}
+.mynote textarea::placeholder{color:var(--muted-foreground)}
+@media (max-width:520px){.dstat,.dstat select{width:100%}.dopen{margin-left:0;flex:1 1 100%}}
 </style>
 
 
@@ -678,38 +784,57 @@ dialog h2,.sh2 h2,.h2{font-size:var(--fs-h2);font-weight:600;letter-spacing:-.02
     </div>
     <div class="side-foot">
       <span class="conns" id="conns" role="group" aria-label="Connections" hidden></span><span id="ivcnt" hidden></span>
-      <button class="linkbtn" type="button" id="onb-open">Welcome tour</button>
-      <div class="pepc"><label class="sw"><input type="checkbox" id="pep-on" checked><span>Hourly pep talk</span></label><button class="btn" id="pep-now" type="button">Send one</button></div>
-      <div class="theme" role="group" aria-label="Theme"><button type="button" data-theme-set="auto" aria-pressed="true">Auto</button><button type="button" data-theme-set="light" aria-pressed="false">Light</button><button type="button" data-theme-set="dark" aria-pressed="false">Dark</button></div>
+      <div class="pepc"><label class="sw"><input type="checkbox" id="pep-on" checked><span>Hourly pep talk</span></label></div>
     </div>
   </aside>
+  <div class="content">
+  <div class="topbar" id="topbar">
+    <div class="tb-in">
+      <div class="tb-t"><h1 id="tbt">Overview</h1><p class="sub" id="sub"></p></div>
+      <div class="tb-r">
+        <input id="q" class="in" type="search" placeholder="Search roles" aria-label="Search roles">
+        <button id="add" class="btn" type="button">Add a role</button>
+        <span class="tb-last" id="tblast" aria-live="polite"></span>
+        <button id="crawlbtn" class="btn pri crawl" type="button" aria-haspopup="dialog"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4.5"/><path d="M12 12l6-6"/></svg>Crawl</button>
+        <div class="tb-menu">
+          <button class="btn ghost iconbtn" type="button" id="tbmore" aria-expanded="false" aria-controls="tbmenu" aria-label="Settings" title="Settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button>
+          <div class="menu" id="tbmenu" role="group" aria-label="Settings" hidden>
+            <button class="mi" type="button" id="onb-open">Welcome tour</button>
+            <span class="lab">Appearance</span>
+            <div class="theme" role="group" aria-label="Theme"><button type="button" data-theme-set="auto" aria-pressed="true">Auto</button><button type="button" data-theme-set="light" aria-pressed="false">Light</button><button type="button" data-theme-set="dark" aria-pressed="false">Dark</button></div>
+            <span class="lab">Pep talk</span>
+            <button class="mi" type="button" id="pep-now">Send me one now</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
   <main class="main">
   <div id="banner" class="alert" hidden></div>
   <div id="tip" hidden></div>
 
   <section id="tab-overview" class="tabp">
-    <header class="pghead"><div><h1>Overview</h1><p class="sub" id="sub"></p></div><button class="btn" type="button" id="onb-open2">Welcome tour</button></header>
     <div class="stats" id="stats" role="group" aria-label="Totals by status"></div>
     <div id="tl"></div>
   </section>
 
   <section id="tab-list" class="tabp" hidden>
+    <div class="frow"><span class="flab">Status</span><div class="subf" id="subf" role="group" aria-label="More status filters"></div></div>
     <div class="stats" id="stats2" role="group" aria-label="Filter by status"></div>
     <div class="bar">
+      <div class="mgrp"><span class="flab">Match</span>
       <div class="tabs" id="tabs" role="tablist" aria-label="Match">
-        <button class="tab" role="tab" data-t="0" aria-selected="true">All</button>
+        <button class="tab" role="tab" data-t="0" aria-selected="true">Any match</button>
         <button class="tab" role="tab" data-t="apply" aria-selected="false">Apply now</button>
         <button class="tab" role="tab" data-t="consider" aria-selected="false">Consider</button>
         <button class="tab" role="tab" data-t="research" aria-selected="false">Research first</button>
         <button class="tab" role="tab" data-t="skip" aria-selected="false">Skip</button>
         <button class="tab" role="tab" data-t="none" aria-selected="false">Not Rated</button>
       </div>
-      <button id="add" class="btn pri" type="button">Add a role</button>
+      </div>
+      <label id="sortwrap" class="sortl">Sort <select id="sort" class="in" aria-label="Sort roles"><option value="fit">Decision, then Fit and Opportunity</option><option value="pay">Highest to lowest paid</option></select></label>
     </div>
-    <div class="bar bar2">
-      <input id="q" class="in" type="search" placeholder="Search company or title" aria-label="Search">
-      <label id="sortwrap" class="sortl">Sort <select id="sort" class="in" aria-label="Sort all roles"><option value="fit">Decision, then Fit and Opportunity</option><option value="pay">Highest to lowest paid</option></select></label>
-    </div>
+    <div class="fbar" id="fbar" aria-live="polite"></div>
     <div class="split" id="split"><div id="plist" class="plist" aria-label="Roles"></div><div id="list" class="detail" aria-live="polite"></div></div>
   </section>
 
@@ -747,6 +872,7 @@ dialog h2,.sh2 h2,.h2{font-size:var(--fs-h2);font-weight:600;letter-spacing:-.02
     </div>
   </section>
   </main>
+  </div>
 </div>
 
 <dialog id="conn" aria-labelledby="cntitle">
@@ -765,6 +891,30 @@ dialog h2,.sh2 h2,.h2{font-size:var(--fs-h2);font-weight:600;letter-spacing:-.02
     <div id="pv-co" hidden><div id="cobody"></div></div>
     <div id="pv-ip" hidden><div id="ipbody"></div></div>
     <div id="pv-hp" hidden><div id="hpbody"></div></div>
+  </div>
+</dialog>
+
+<dialog id="crawl" aria-labelledby="crt">
+  <div class="sh2" style="padding:0 0 8px"><h2 id="crt">Crawl for new roles</h2><button class="btn ghost" type="button" id="crx">Close</button></div>
+  <p class="cq-lede">Claude Code does the searching. This page can't run it, so copy the prompt and paste it into Claude Code opened in your project folder. The prompt tells it to only read: nothing is sent, posted or applied. A source that isn't connected is skipped.</p>
+  <fieldset class="cq-f"><legend>Where to look</legend>
+    <label class="cq-opt"><input type="checkbox" data-src="boards"><span class="cq-body"><b>Job boards</b><small>Employer job systems, remote boards and VC portfolio boards</small></span></label>
+    <label class="cq-opt"><input type="checkbox" data-src="gmail"><span class="cq-body"><b>Gmail</b><small>Job alerts and recruiter emails that name a role. Read-only.</small></span></label>
+    <div class="cq-opt"><input type="checkbox" id="cq-s" data-src="slack"><div class="cq-body"><label for="cq-s"><b>Slack</b><small>Channels where people share roles. Read-only.</small></label><input class="in" id="cq-slack" placeholder="Channels, e.g. #jobs, #design-leads (optional)" aria-label="Slack channels"></div></div>
+    <div class="cq-opt"><span class="cq-sp"></span><div class="cq-body"><label for="cq-other"><b>Other connectors</b><small>Any other connector you have set up in Claude Code</small></label><input class="in" id="cq-other" placeholder="e.g. Google Drive, Notion (optional)" aria-label="Other connectors"></div></div>
+  </fieldset>
+  <fieldset class="cq-f"><legend id="cq-wl">How far back</legend>
+    <div class="cq-seg" role="radiogroup" aria-label="How far back">
+      <button type="button" role="radio" data-win="since" id="cq-w-since">Since last crawl</button>
+      <button type="button" role="radio" data-win="24h">Last 24 hours</button>
+      <button type="button" role="radio" data-win="7d">Last 7 days</button>
+    </div>
+  </fieldset>
+  <div class="hlabel" style="margin:0 0 6px">The prompt</div>
+  <pre id="cq-pre" tabindex="0"></pre>
+  <div class="cq-foot">
+    <div class="grow"><button class="linkbtn" type="button" data-ccg="1">New to Claude Code?</button><button class="linkbtn" type="button" data-sheet="hp">What to do next</button></div>
+    <button class="btn pri" type="button" id="cq-copy">Copy prompt</button>
   </div>
 </dialog>
 
@@ -1271,6 +1421,26 @@ function logHtml(g){
   return items.length?`<ul class="log">${items.map(e=>`<li><time>${esc(e.d)}</time><span>${esc(e.t)}</span><button type="button" data-dellog="${e.i}" aria-label="Delete entry">×</button></li>`).join("")}</ul>`:"";
 }
 const noReply=r=>statusOf(r.id)==="applied"&&!get(r.id).response;
+const MATCH_LBL={"0":"Any match",apply:"Apply now",consider:"Consider",research:"Research first",skip:"Skip",none:"Not Rated"};
+/* three independent filters, each one a yes/no on a role; counts on the cards and tabs apply the other filters */
+const stMatch=(r,f)=>f==="all"||(f==="iv"?hasIv(r.id):f==="noreply"?noReply(r):statusOf(r.id)===f);
+const mtMatch=(r,t)=>t==="0"||bucket(r)===t;
+const qMatch=(r,q)=>!q||(r.co+" "+r.title).toLowerCase().includes(q);
+const statusLbl=f=>f==="iv"?"Interviewed":f==="noreply"?"Not heard back":((STATUSES.find(s=>s[0]===f)||[])[1]||f);
+function renderFbar(n,total){
+  const q=state.q.trim(),chips=[];
+  if(state.filter!=="all")chips.push(["status","Status",statusLbl(state.filter)]);
+  if(state.tier!=="0")chips.push(["match","Match",MATCH_LBL[state.tier]||state.tier]);
+  if(q)chips.push(["q","Search","“"+q+"”"]);
+  $("fbar").innerHTML=`<span class="fcount"><b>${n}</b> of ${total} role${total===1?"":"s"}</span>`+chips.map(([k,a,v])=>`<button class="fchip" type="button" data-clear="${k}" aria-label="Clear ${a} filter: ${esc(v)}">${a}: ${esc(v)} <span aria-hidden="true">✕</span></button>`).join("")+(chips.length>1?`<button class="linkbtn" type="button" data-clear="all">Clear all</button>`:"");
+}
+document.addEventListener("click",e=>{
+  const c=e.target.closest("[data-clear]");if(!c)return;const k=c.dataset.clear;
+  if(k==="status"||k==="all")state.filter="all";
+  if(k==="match"||k==="all")state.tier="0";
+  if(k==="q"||k==="all"){state.q="";$("q").value=""}
+  state.mobDet=false;render();
+});
 function renderStats(){
   const roles=allRoles();
   const counts=Object.fromEntries(STATUSES.map(s=>[s[0],0]));
@@ -1279,24 +1449,29 @@ function renderStats(){
     STATUSES.map(([k,l,v])=>`<button class="stat" style="--c:var(${v})" data-f="${k}" aria-pressed="${state.filter===k}"><b>${counts[k]}</b><span><i></i>${l}</span></button>`).join("")+
     `<button class="stat" style="--c:var(--c-interview)" data-f="iv" aria-pressed="${state.filter==="iv"}"><b>${roles.filter(r=>hasIv(r.id)).length}</b><span><i></i>Interviewed</span></button>`+
     `<button class="stat" style="--c:var(--c-new)" data-f="noreply" aria-pressed="${state.filter==="noreply"}"><b>${roles.filter(noReply).length}</b><span><i></i>Not heard back</span></button>`;
-  $("stats").innerHTML=kpi.replace(/<button class="stat"/g,'<div class="stat static"').replace(/<\/button>/g,"</div>").replace(/ data-f="[^"]*" aria-pressed="[^"]*"/g,"");$("stats2").innerHTML=kpi;
+  $("stats").innerHTML=kpi.replace(/<button class="stat"/g,'<div class="stat static"').replace(/<\/button>/g,"</div>").replace(/ data-f="[^"]*" aria-pressed="[^"]*"/g,"");
+  const q0=state.q.toLowerCase(),inM=r=>mtMatch(r,state.tier)&&qMatch(r,q0),cnt=f=>roles.filter(r=>inM(r)&&stMatch(r,f)).length;
+  const card=(f,l,v)=>{const n=cnt(f),on=state.filter===f;return `<button class="stat${n===0&&!on?" zero":""}" style="--c:var(${v})" data-f="${f}" aria-pressed="${on}"><b>${n}</b><span>${f==="all"?"":"<i></i>"}${l}</span></button>`};
+  $("stats2").innerHTML=card("all","Any status","--accent")+STATUSES.map(([k,l,v])=>card(k,l,v)).join("");
+  $("subf").innerHTML="<span>Also:</span>"+[["iv","Interviewed"],["noreply","Not heard back"]].map(([f,l])=>`<button class="schip" type="button" data-f="${f}" aria-pressed="${state.filter===f}">${l} <b>${cnt(f)}</b></button>`).join("");
 }
 function render(){
   renderStats();renderTimeline();renderIvCard();renderOverview();renderHist();
-  $("sub").textContent=`${allRoles().length} roles tracked. Open Listings to filter by status. Everything you change saves automatically.`;
+  renderTop();
   if(state.view==="list")renderList();
   if(state.view==="res")renderResume();
   renderBuild();renderRoleSnips();
 }
 function renderList(){
   const roles=allRoles();
-  document.querySelectorAll("#tabs .tab").forEach(b=>b.setAttribute("aria-selected",String(b.dataset.t===state.tier)));
-  $("sortwrap").hidden=state.tier!=="0";$("sort").value=state.sort;
   const q=state.q.toLowerCase();
-  const vis=roles.filter(r=>(state.filter==="all"||(state.filter==="iv"?hasIv(r.id):state.filter==="noreply"?noReply(r):statusOf(r.id)===state.filter))&&(state.tier==="0"||(bucket(r)===state.tier&&!(state.tier==="apply"&&hideApplyBadge(r))))&&(!q||(r.co+" "+r.title).toLowerCase().includes(q)));
-  vis.sort(state.tier==="0"&&state.sort==="pay"?(a,b)=>(payOf(b)-payOf(a))||(gradeKey(b)-gradeKey(a)):(a,b)=>(gradeKey(b)-gradeKey(a))||(payOf(b)-payOf(a)));
+  document.querySelectorAll("#tabs .tab").forEach(b=>{const t=b.dataset.t,on=t===state.tier,n=roles.filter(r=>stMatch(r,state.filter)&&qMatch(r,q)&&mtMatch(r,t)).length;b.setAttribute("aria-selected",String(on));b.classList.toggle("zero",n===0&&!on);b.innerHTML=`${MATCH_LBL[t]}<span class="tn">${n}</span>`});
+  $("sort").value=state.sort;
+  const vis=roles.filter(r=>stMatch(r,state.filter)&&mtMatch(r,state.tier)&&qMatch(r,q));
+  vis.sort(state.sort==="pay"?(a,b)=>(payOf(b)-payOf(a))||(gradeKey(b)-gradeKey(a)):(a,b)=>(gradeKey(b)-gradeKey(a))||(payOf(b)-payOf(a)));
+  renderFbar(vis.length,roles.length);
   const PL=$("plist"),L=$("list");
-  if(!vis.length){PL.innerHTML=roles.length?`<div class="empty">No roles match. Clear the filter or search.</div>`:`<div class="empty" style="text-align:left;padding:8px 4px"><b style="display:block;font-size:18px;margin-bottom:6px">No roles yet</b><p class="rnote" style="margin:0 0 12px">Add a role you found by link, pasted description or by hand, or let Claude Code search the job boards for you.</p><div class="ctl"><button class="btn pri" type="button" data-emptyadd="1">Add a role</button><button class="btn" type="button" data-sheet="hp">How do I find roles?</button></div></div>`;L.innerHTML="";return}
+  if(!vis.length){PL.innerHTML=roles.length?`<div class="empty">No roles match these filters.<div style="margin-top:12px"><button class="btn" type="button" data-clear="all">Clear all filters</button></div></div>`:`<div class="empty" style="text-align:left;padding:8px 4px"><b style="display:block;font-size:18px;margin-bottom:6px">No roles yet</b><p class="rnote" style="margin:0 0 12px">Add a role you found by link, pasted description or by hand, or let Claude Code search the job boards for you.</p><div class="ctl"><button class="btn pri" type="button" data-emptycrawl="1">Crawl for roles</button><button class="btn" type="button" data-emptyadd="1">Add a role</button><button class="btn" type="button" data-sheet="hp">How do I find roles?</button></div></div>`;L.innerHTML="";return}
   if(!vis.some(r=>r.id===state.sel))state.sel=vis[0].id;
   const top=PL.scrollTop;
   PL.innerHTML=vis.map(previewCard).join("");PL.scrollTop=top;
@@ -1336,17 +1511,18 @@ function detailHtml(r){
       <button class="btn backbtn" type="button" data-back="1">&larr; All roles</button>
       <div class="top"><div class="who"><div class="head"><span class="co">${esc(r.co)}</span>${decPill(r)}</div><div class="ti">${esc(r.title)}</div>
         <div class="meta"><span class="mono">${esc(r.pay||"pay not stated")}</span>${r.level&&!/^not stated/i.test(r.level)?`<span>${esc(r.level)}</span>`:""}</div>
-        ${scoreRow(r)}${tagRow(r,s)}</div>
-        <div class="ctl">
-          <select class="in" data-k="status" aria-label="Status for ${esc(r.co)}">${STATUSES.map(([k,l])=>`<option value="${k}"${k===s?" selected":""}>${l}</option>`).join("")}</select>
-          ${r.url?`<a class="btn" href="${esc(r.url)}" target="_blank" rel="noopener noreferrer">Open posting</a>`:""}<button class="btn" type="button" data-tailor="${esc(r.id)}">${g.tr?"Tailored resume":"Tailor resume"}</button><button class="btn" type="button" data-cover="${esc(r.id)}">${g.cl||g.ou?"Letter & outreach (saved)":"Letter & outreach"}</button>${(["applied","interview","offer"].includes(s)||g.ip||hasIv(r.id))?`<button class="btn" type="button" data-ip="${esc(r.id)}">${g.ip?"Interview prep (saved)":"Interview prep"}</button>`:""}<button class="btn" type="button" data-ask="${esc(r.id)}">Ask assistant</button>
-        </div></div>
+        ${scoreRow(r)}${tagRow(r,s)}</div></div>
+      <div class="dbar">
+        <label class="dstat"><span class="flab">Status</span><select class="in" data-k="status" aria-label="Status for ${esc(r.co)}">${STATUSES.map(([k,l])=>`<option value="${k}"${k===s?" selected":""}>${l}</option>`).join("")}</select></label>
+        <div class="dacts" role="group" aria-label="Work on this role"><button class="btn" type="button" data-tailor="${esc(r.id)}">${g.tr?"Tailored resume":"Tailor resume"}</button><button class="btn" type="button" data-cover="${esc(r.id)}">${g.cl||g.ou?"Letter & outreach (saved)":"Letter & outreach"}</button>${(["applied","interview","offer"].includes(s)||g.ip||hasIv(r.id))?`<button class="btn" type="button" data-ip="${esc(r.id)}">${g.ip?"Interview prep (saved)":"Interview prep"}</button>`:""}<button class="btn" type="button" data-ask="${esc(r.id)}">Ask assistant</button></div>
+        ${r.url?`<a class="btn pri dopen" href="${esc(r.url)}" target="_blank" rel="noopener noreferrer">Open posting <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></a>`:""}
+      </div>
       ${s!=="new"?`<div class="row2"><label class="lbl">Applied<input class="in" type="date" data-k="applied" value="${esc(g.applied||"")}"></label>
         <label class="lbl">Response<input class="in" type="date" data-k="response" value="${esc(g.response||"")}"></label>
         <label class="lbl">Follow up<input class="in" type="date" data-k="followUp" value="${esc(g.followUp||"")}"></label></div>`:""}
       <div class="notes2">
-        ${aiNote(r.id)?`<div class="ainote"><div class="nh"><span>Left by Claude</span><span class="ro" title="Written by Claude Code. You can't edit it here.">Read-only</span></div><p>${esc(aiNote(r.id))}</p></div>`:""}
-        <label class="lbl">Your notes<textarea class="in" data-k="pnotes" placeholder="Recruiter, contact, what you sent, questions" aria-label="Your notes for ${esc(r.co)}">${esc(myNote(r.id))}</textarea></label>
+        ${aiNote(r.id)?`<section class="ncard ainote"><div class="nh"><span>Left by Claude</span><span class="ro" title="Written by Claude Code. You can't edit it here.">Read-only</span></div><p>${esc(aiNote(r.id))}</p></section>`:""}
+        <section class="ncard mynote"><div class="nh"><span>Your notes</span><span class="ro">Saves as you type</span></div><textarea data-k="pnotes" placeholder="Recruiter, contact, what you sent, questions" aria-label="Your notes for ${esc(r.co)}">${esc(myNote(r.id))}</textarea></section>
       </div>
       ${gradeSection(r)}
       <details class="trk" data-o="${esc(r.id)}:t"${(state.open[r.id+":t"]??(s!=="new"))?" open":""}><summary>Contact, next step and activity${(g.log||[]).length?` (${g.log.length})`:""}</summary>
@@ -1620,16 +1796,34 @@ document.addEventListener("click",async e=>{
   const ok=await copyText(BUILDS[+b.dataset.cp].prompt);
   b.textContent=ok?"Copied":"Press Ctrl+C";b.classList.toggle("done",ok);setTimeout(()=>{b.textContent="Copy";b.classList.remove("done")},1400);
 });
-function setStickH(){const st=document.querySelector(".stick");if(st)document.documentElement.style.setProperty("--stickh",st.offsetHeight+"px")}
 document.addEventListener("scroll",e=>{const t=e.target===document?document.documentElement:e.target;if(!t||!t.classList)return;t.classList.add("sb-on");clearTimeout(t._sb);t._sb=setTimeout(()=>t.classList.remove("sb-on"),1200)},{capture:true,passive:true});
-renderInsights();renderBuild();setStickH();
-try{const st=document.querySelector(".stick"),f=()=>st.classList.toggle("stuck",scrollY>8);addEventListener("scroll",f,{passive:true});f()}catch(e){}
-try{new ResizeObserver(setStickH).observe(document.querySelector(".stick"))}catch(e){addEventListener("resize",setStickH)}
+renderInsights();renderBuild();
 
 /* ---------- help: where things run, task guides, Claude Code prompts ---------- */
 const PAGE_URL=PROFILE().pageUrl||"";
 function profileCriteria(){const p=PROFILE(),mn=numK(p.min),tg=numK(p.target);return [p.titlesList.length&&"Target roles: "+p.titlesList.join(", "),p.levels.length&&"Level: "+p.levels.join(", "),(p.remote||p.city)&&"Location: "+(p.remote||"Remote")+(p.city?" ("+p.city+")":""),(mn||tg)&&"Pay: "+(mn?"minimum base $"+mn+"K":"")+(mn&&tg?", ":"")+(tg?"target $"+tg+"K":""),p.types.length&&"Employment: "+p.types.join(", "),p.avoid&&"Deal-breakers: "+p.avoid].filter(Boolean).join("\n")||"(none saved yet: use grading/profile.md)"}
 /* one registry feeds the Help drawer, the run-location tags and the copy buttons; move a task between "app" and "claude-code" here */
+function crawlPrompt(o){
+  o=o||{};const when=o.when||"since [DATE]",boards=o.boards!==false,oth=(o.other||"").trim(),ch=(o.slackCh||"").trim(),conn=!!(o.gmail||o.slack||oth);
+  let src=`Use three agents in parallel: employer job systems (Ashby, Greenhouse, Lever), remote job boards, and VC portfolio boards. Each writes results/<lane>.tsv and role files into a new folder new-crawlN/ (fit_score_10 left empty; follow grading/CRAWL-BRIEF.md and the TSV header in tools/merge_crawl.py).`;
+  if(conn||!boards){
+    const L=[];
+    if(boards)L.push("- Job boards: employer job systems (Ashby, Greenhouse, Lever), remote job boards, and VC portfolio boards (three agents).");
+    if(o.gmail)L.push(`- Gmail (read-only connector): search my inbox ${when} for job alerts, recruiter emails and referrals that name a specific role. Use the email only to find the role, then verify it on the employer's own posting. Lane: gmail.`);
+    if(o.slack)L.push(`- Slack (read-only connector): read ${ch?"these channels ("+ch+")":"the channels where people share roles"} ${when} for posted roles and referrals. Verify each role on the employer's own posting. Lane: slack.`);
+    if(oth)L.push(`- Other connectors (read-only): ${oth}. Look for roles posted ${when}. Verify each role on the employer's own posting. Lane: other.`);
+    src="Use one agent per source, in parallel. Each writes results/<lane>.tsv and role files into a new folder new-crawlN/ (fit_score_10 left empty; follow grading/CRAWL-BRIEF.md and the TSV header in tools/merge_crawl.py):\n"+L.join("\n")+"\nIf a connector is not connected, skip that source and tell me which one. In each role's notes, say where it was found (job board, Gmail or Slack).";
+  }
+  return [`In ${PROJECT}, run a new job crawl for roles posted or updated ${when}.`,
+    `${CSV_RULE}`,
+    `Rules: this tool never fills out or submits an application, so do not apply to anything, create accounts, sign in, or enter personal information. Do not invent details; write "not stated" when something is missing. Verify each link through the employer's public job-board data and note the date checked. Log anything blocked or unreadable in logs/. Stop a source that rate-limits you; never work around it.`+(conn?" Email, Slack and other connectors are read-only: never send, reply, forward, label, delete, react or post, and never repeat one-time codes or quote private messages.":""),
+    `Criteria (from my profile; edit to match your search):`,
+    `${profileCriteria()}`,
+    src,
+    `Then run: python3 tools/merge_crawl.py new-crawlN YYYY-MM-DD`,
+    `Then add an entry to logs/crawl-log.json (create it as [] if it is missing): {"d":"YYYY-MM-DD","t":"short title","res":"one-line result","why":"what you looked for","lanes":[["lane name",roles_kept,"what you searched and what you found"]],"blocked":["anything blocked or unreadable"],"note":"optional"}`,
+    conn||!boards?"Tell me how many roles you found, kept and dropped for each source, and what was blocked. Do not grade yet.":`Tell me how many roles you found, kept and dropped, and what was blocked. Do not grade yet.`].join("\n");
+}
 const TASKS=[
  {id:"rescore",where:"app",title:"Regrade a role",where_to:"Listings, open a role, the grade section, Regrade",needs:"Claude access in this page",reads:"The role's card details and your experience data",writes:"Gate results, Fit and Opportunity letters, a decision, reasons, matched strengths and gaps on that role"},
  {id:"tailor",where:"app",title:"Tailor your résumé to a role",where_to:"Role card, Tailor resume",needs:"Claude access in this page",reads:"Your master résumé and the posting (paste it for a closer match)",writes:"A tailored résumé saved on that role; PDF and DOCX downloads"},
@@ -1640,15 +1834,7 @@ const TASKS=[
  {id:"track",where:"app",title:"Track status, notes and follow-ups",where_to:"Role card status, notes and activity log",needs:"Nothing",reads:"What you type",writes:"Status, dates, notes and activity on the role"},
  {id:"ask",where:"app",title:"Ask the Assistant",where_to:"Assistant tab, or Ask assistant on a role",needs:"Claude access in this page",reads:"The tracker data in this page",writes:"Nothing. It is read-only."},
  {id:"crawl",where:"claude-code",title:"Run a crawl for new roles",desc:"Searches job boards and employer job systems for new roles, writes each as a role file, and merges new ones into tracker.csv with the fit score left blank.",reads:"Public job boards and employer job pages. It does not sign in, create accounts or apply.",writes:"A new crawl folder, roles/, tracker.csv (backup first), logs/",steps:["Open Claude Code in the project folder.","Paste the prompt below, set the date, and send it.","When it finishes, run Grade new roles, then Rebuild and republish."],
-  get prompt(){return `In ${PROJECT}, run a new job crawl for roles posted or updated since [DATE].
-${CSV_RULE}
-Rules: this tool never fills out or submits an application, so do not apply to anything, create accounts, sign in, or enter personal information. Do not invent details; write "not stated" when something is missing. Verify each link through the employer's public job-board data and note the date checked. Log anything blocked or unreadable in logs/. Stop a source that rate-limits you; never work around it.
-Criteria (from my profile; edit to match your search):
-${profileCriteria()}
-Use three agents in parallel: employer job systems (Ashby, Greenhouse, Lever), remote job boards, and VC portfolio boards. Each writes results/<lane>.tsv and role files into a new folder new-crawlN/ (fit_score_10 left empty; follow grading/CRAWL-BRIEF.md and the TSV header in tools/merge_crawl.py).
-Then run: python3 tools/merge_crawl.py new-crawlN YYYY-MM-DD
-Then add an entry to logs/crawl-log.json (create it as [] if it is missing): {"d":"YYYY-MM-DD","t":"short title","res":"one-line result","why":"what you looked for","lanes":[["lane name",roles_kept,"what you searched and what you found"]],"blocked":["anything blocked or unreadable"],"note":"optional"}
-Tell me how many roles you found, kept and dropped, and what was blocked. Do not grade yet.`}},
+  get prompt(){return crawlPrompt()}},
  {id:"grade",where:"claude-code",title:"Grade new roles in bulk",desc:"Grades every role that has a role file but no v2 grade: gate results, Fit and Opportunity letters, then a computed decision.",reads:"Role files, grading/rubric-v2.md, grading/profile.md",writes:"tracker-app/grades2.json and the decision columns in tracker.csv",steps:["Run this after a crawl or after you add role files.","Paste the prompt and send it.","When it finishes, run Rebuild and republish."],
   prompt:`In ${PROJECT}: ${CSV_RULE}
 Then run: python3 grading/grade_v2.py batches2
@@ -1708,6 +1894,63 @@ function renderCrawlLog(){
   el.innerHTML=runStrip()+body;
 }
 renderCrawlLog();
+
+/* ---------- global top bar and the Crawl dialog ---------- */
+const TB_TITLES={overview:"Overview",list:"Listings",str:"Strengths & Gaps",res:"Resume",chat:"Assistant"};
+const lastCrawlDate=()=>{const ds=(Array.isArray(CRAWLS_BUILD)?CRAWLS_BUILD:[]).map(c=>c&&c.d).filter(d=>/^\d{4}-\d{2}-\d{2}$/.test(d||"")).sort();return ds.length?ds[ds.length-1]:""};
+function renderCrawlChip(){
+  const el=$("tblast"),d=lastCrawlDate();
+  if(!d){el.textContent="Not crawled yet";el.dataset.stale="0";return}
+  const[y,m,dd]=d.split("-").map(Number),t=new Date(),n=Math.round((new Date(t.getFullYear(),t.getMonth(),t.getDate())-new Date(y,m-1,dd))/864e5);
+  el.textContent="Last crawled "+(n<=0?"today":n===1?"yesterday":n+" days ago");el.dataset.stale=n>2?"1":"0";
+}
+function syncStickH(){const t=$("topbar");if(!t)return;document.documentElement.style.setProperty("--stickh",getComputedStyle(t).position==="sticky"?t.offsetHeight+"px":"0px")}
+function renderTop(){
+  const v=state.view||"overview",n=allRoles().length;
+  $("tbt").textContent=TB_TITLES[v]||"";
+  $("sub").textContent=v==="overview"?`${n} role${n===1?"":"s"} tracked. Changes save automatically.`:v==="list"?(n?`${n} role${n===1?"":"s"}. Pick one to read its grade and keep your notes.`:"No roles yet."):"";
+  $("sub").hidden=!$("sub").textContent;
+  renderCrawlChip();syncStickH();
+}
+try{new ResizeObserver(syncStickH).observe($("topbar"))}catch(e){}
+addEventListener("resize",syncStickH);
+(function(){
+  const btn=$("tbmore"),m=$("tbmenu");
+  const close=f=>{if(m.hidden)return;m.hidden=true;btn.setAttribute("aria-expanded","false");if(f)btn.focus()};
+  btn.addEventListener("click",()=>{if(m.hidden){m.hidden=false;btn.setAttribute("aria-expanded","true");const f=m.querySelector("button");if(f)f.focus()}else close(true)});
+  document.addEventListener("click",e=>{if(!m.hidden&&!e.target.closest(".tb-menu"))close()});
+  m.addEventListener("click",e=>{if(e.target.closest("#onb-open,#pep-now"))close()});
+  document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!m.hidden)close(true)});
+})();
+
+const CQ_KEY="jt-crawl-opts";
+const cq={boards:true,gmail:true,slack:true,slackCh:"",otherTxt:"",win:"since"};
+try{const s=JSON.parse(localStorage.getItem(CQ_KEY)||"{}")||{};["boards","gmail","slack"].forEach(k=>{if(typeof s[k]==="boolean")cq[k]=s[k]});["slackCh","otherTxt"].forEach(k=>{if(typeof s[k]==="string")cq[k]=s[k].slice(0,300)});if(["since","24h","7d"].includes(s.win))cq.win=s.win}catch(e){}
+const cqSave=()=>{try{localStorage.setItem(CQ_KEY,JSON.stringify(cq))}catch(e){}};
+const cqAny=()=>cq.boards||cq.gmail||cq.slack||!!cq.otherTxt.trim();
+function cqWhen(){const d=lastCrawlDate();return cq.win==="24h"?"in the last 24 hours":cq.win==="7d"?"in the last 7 days":d?"since "+d:"in the last 30 days"}
+const cqPrompt=()=>crawlPrompt({when:cqWhen(),boards:cq.boards,gmail:cq.gmail,slack:cq.slack,slackCh:cq.slackCh,other:cq.otherTxt});
+function cqPreview(){const any=cqAny();$("cq-pre").textContent=any?cqPrompt():"Pick at least one place to look.";$("cq-copy").disabled=!any}
+function cqRender(){
+  const d=lastCrawlDate();
+  document.querySelectorAll("#crawl [data-src]").forEach(c=>{c.checked=!!cq[c.dataset.src]});
+  $("cq-slack").value=cq.slackCh;$("cq-other").value=cq.otherTxt;$("cq-slack").disabled=!cq.slack;
+  $("cq-w-since").textContent=d?"Since last crawl":"Last 30 days";$("cq-wl").textContent="How far back"+(d?" (last crawl "+fmtD(d)+")":"");
+  document.querySelectorAll("#crawl [data-win]").forEach(b=>b.setAttribute("aria-checked",String(b.dataset.win===cq.win)));
+  cqPreview();
+}
+function openCrawl(){cqRender();if(!$("crawl").open)$("crawl").showModal()}
+$("crawlbtn").addEventListener("click",openCrawl);
+$("crawl").addEventListener("click",e=>{
+  const r=$("crawl").getBoundingClientRect();
+  if(e.target===$("crawl")&&(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)){$("crawl").close();return}
+  if(e.target.closest("#crx")){$("crawl").close();return}
+  const w=e.target.closest("[data-win]");if(w){cq.win=w.dataset.win;cqSave();cqRender();return}
+  if(e.target.closest("[data-sheet],[data-ccg]")){$("crawl").close();return}
+  if(e.target.closest("#cq-copy")&&cqAny())copyPrompt($("cq-copy"),cqPrompt());
+});
+$("crawl").addEventListener("change",e=>{const c=e.target.closest("[data-src]");if(!c)return;cq[c.dataset.src]=c.checked;cqSave();cqRender()});
+$("crawl").addEventListener("input",e=>{if(e.target.id==="cq-slack")cq.slackCh=e.target.value;else if(e.target.id==="cq-other")cq.otherTxt=e.target.value;else return;cqSave();cqPreview()});
 
 /* ---------- reading the résumé text into sections (one Claude call; nothing is sent anywhere else) ---------- */
 const hashStr=t=>{let h=5381;for(let i=0;i<t.length;i++)h=((h<<5)+h+t.charCodeAt(i))|0;return String(h)};
@@ -2264,14 +2507,14 @@ $("ipbody").addEventListener("click",async e=>{
 document.addEventListener("click",e=>{const b=e.target.closest("[data-ip]");if(b){openIp(b.dataset.ip)}});
 
 /* ---------- events ---------- */
-["stats2"].forEach(i=>$(i).addEventListener("click",e=>{const b=e.target.closest("[data-f]");if(!b)return;state.filter=(state.filter===b.dataset.f&&b.dataset.f!=="all")?"all":b.dataset.f;state.mobDet=false;setView("list")}));
+["stats2","subf"].forEach(i=>$(i).addEventListener("click",e=>{const b=e.target.closest("[data-f]");if(!b)return;state.filter=(state.filter===b.dataset.f&&b.dataset.f!=="all")?"all":b.dataset.f;state.mobDet=false;setView("list")}));
 $("sort").addEventListener("change",e=>{state.sort=e.target.value;render()});
 document.addEventListener("click",e=>{
   const b=e.target.closest("[data-sheet]");
   if(b){const k=b.dataset.sheet;$("pv-iv").hidden=k!=="iv";$("pv-qc").hidden=k!=="qc";$("pv-cl").hidden=k!=="cl";$("pv-bd").hidden=k!=="bd";$("pv-tr").hidden=true;$("pv-co").hidden=true;$("pv-ip").hidden=true;$("pv-hp").hidden=k!=="hp";$("sheet").classList.toggle("wide",k==="bd"||k==="hp");$("shtitle").textContent=({iv:"Interviews",qc:"Quick copy",cl:"Crawl log",bd:"Build",hp:"Help"})[k];if(!$("sheet").open)$("sheet").showModal();return}
   if(e.target===$("sheet")||e.target.closest("#shclose"))$("sheet").close();
 });
-$("q").addEventListener("input",e=>{state.q=e.target.value;render();$("q").focus()});
+$("q").addEventListener("input",e=>{state.q=e.target.value;if(state.view!=="list"){state.tier="0";state.filter="all";state.mobDet=false;setView("list")}else render();$("q").focus()});
 $("tabs").addEventListener("click",e=>{const b=e.target.closest("[data-t]");if(!b)return;state.tier=b.dataset.t;render()});
 const timers={};
 $("list").addEventListener("change",e=>{
@@ -2520,7 +2763,7 @@ function renderOnb(){
 function openOnb(st){loadOnb();onb.f=null;onb.parse=null;if(!onb.a.start)onb.a.start=today();onb.step=(typeof st==="number"&&st>=0&&st<ONB_STEPS.length)?st:0;onb.err="";onb.copied={};renderOnb();$("onb").showModal()}
 function refreshProfileViews(){syncProfile();render();renderSnips();renderInsights();renderResume();renderBuild();renderCrawlLog()}
 function finishOnb(){lsSet("jt-onb",JSON.stringify(onb.a));lsSet("jt-onb-done","1");$("onb").close();refreshProfileViews()}
-$("onb-open").addEventListener("click",openOnb);$("onb-open2").addEventListener("click",openOnb);
+$("onb-open").addEventListener("click",openOnb);
 $("onb-skip").addEventListener("click",()=>{lsSet("jt-onb-done","1");$("onb").close()});
 $("onb-back").addEventListener("click",()=>{if(onb.step>0){onb.step--;onb.err="";renderOnb()}});
 $("onb-next").addEventListener("click",async()=>{
@@ -2621,7 +2864,7 @@ function goRole(id){
   state.tier="0";state.filter="all";state.q="";$("q").value="";state.sel=id;state.mobDet=true;setView("list");
   requestAnimationFrame(()=>{const c=[...document.querySelectorAll("#plist [data-sel]")].find(n=>n.dataset.sel===id);if(c)c.scrollIntoView({block:"center"});const el=document.querySelector("#list .role");if(el){el.classList.add("flash");setTimeout(()=>el.classList.remove("flash"),1800)}});
 }
-$("plist").addEventListener("click",e=>{if(e.target.closest("[data-emptyadd]")){$("add").click();return}
+$("plist").addEventListener("click",e=>{if(e.target.closest("[data-emptycrawl]")){openCrawl();return}if(e.target.closest("[data-emptyadd]")){$("add").click();return}
   const b=e.target.closest("[data-sel]");if(!b)return;state.sel=b.dataset.sel;state.mobDet=true;renderList();scrollTo({top:0});$("list").scrollTop=0});
 $("list").addEventListener("click",e=>{if(e.target.closest("[data-back]")){state.mobDet=false;renderList()}});
 document.addEventListener("click",e=>{
