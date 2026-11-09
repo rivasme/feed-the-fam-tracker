@@ -10,6 +10,7 @@ A free job-search tracker I built while I was looking for work. It keeps every r
 ## What it does
 
 - **Keeps your search in one place.** Add a role by pasting a link, pasting a job description, or typing it in. See every status at a glance, with a timeline of applications, rejections, interviews and "not heard back."
+- **Finds new roles with one button.** The **Crawl** button in the top bar opens a short dialog: pick job boards, Gmail, Slack or other sources and a time window, and it writes a read-only prompt for you to paste into Claude Code. The page never runs the crawl itself, and it shows when you last crawled.
 - **Grades each role honestly.** Pass-or-fail gates (pay, remote, employment type, and more), then **Fit** (can you win it?) and **Opportunity** (is it worth having?) from A to F, with the reasons. A strengths-and-gaps web shows where you are strong and where you are not.
 - **Helps with the next step.** Tailor your résumé to a posting using only facts from your own résumé, draft cover letters and outreach (nothing is sent for you), prepare for interviews, and ask an assistant what to apply to next.
 - **Turns gaps into projects.** Generate or write Build ideas, and track each one from Idea to Shipped.
@@ -53,6 +54,7 @@ The tracker itself is free. The AI runs on your Claude account, so that part has
    If your Claude Code can't publish Artifacts, build a local copy with `python3 tracker-app/build.py tracker.html` and open it in your browser. A local copy is good for tracking, but it **loses the in-page AI features** (grading, tailoring, the Assistant), because those need the page to run inside Claude.
 4. Open the page. A short welcome tour asks for your name, your résumé (upload a PDF, Word or text file, or paste it), and what you want. It then gives you copy-ready prompts for Claude Code.
 5. Add your first role and let the grading do its thing.
+6. When you want new roles, click **Crawl** at the top, choose your sources, copy the prompt and paste it into Claude Code.
 
 ## Make it yours
 
