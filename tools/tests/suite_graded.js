@@ -35,6 +35,7 @@
       await new Promise(r => setTimeout(r, 300));
       ok("match tag is full strength again when the role is set back to Not applied", !tag().classList.contains("done"), tag().className);
     }
+    ok("role file feeds the page a condensed summary and the full posting", /Must-haves: SQL, Tableau/.test(ROLES[0].post) && !/Full posting/.test(ROLES[0].post) && /Full posting: Acme/.test(ROLES[0].full));
     // KPI filters
     $("[data-v=overview]").click();
     ok("Overview KPI cards are display-only", $$("#stats .stat").length === 9 && $$("#stats button").length === 0);

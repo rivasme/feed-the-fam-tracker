@@ -35,7 +35,7 @@ def make_root(kind, tmp):
     with open(os.path.join(root, "tracker.csv"), "w", newline="") as fh:
         w = csv.DictWriter(fh, fieldnames=cols); w.writeheader(); w.writerow(row)
     open(os.path.join(root, "roles", "acme-analytics--senior-data-analyst.md"), "w").write(
-        "# Senior Data Analyst\n- Company: Acme Analytics\n- Posted pay: $100K-$130K\n- Remote: Remote, USA\n- Years: 5+ years of data analysis\nDuties: build dashboards in Tableau and write SQL.\n")
+        "# Senior Data Analyst\n- Company: Acme Analytics\n- Posted pay: $100K-$130K\n- Remote: Remote, USA\n- Years: 5+ years of data analysis\nDuties: build dashboards in Tableau and write SQL.\n\n## Condensed\n\n**What it is:** Analytics role on the growth team.\n**Must-haves:** SQL, Tableau.\n\n## Posting text\n\nFull posting: Acme Analytics wants a Senior Data Analyst to own dashboards.\n")
     gates = {k: {"r": "pass", "q": "not stated"} for k in ("pay", "remote", "type", "degree", "elig", "live", "avoid", "interm")}
     gates["pay"]["q"] = "$100K-$130K"
     g2 = {"acme-analytics--senior-data-analyst.md": {
@@ -57,7 +57,7 @@ def make_root(kind, tmp):
 def run_suite(name, tour, tmp):
     root = make_root(name, tmp)
     out = os.path.join(tmp, name + ".html")
-    env = dict(os.environ, FTF_ROOT=root)
+    env = dict(os.environ, FTF_ROOT=root, FTF_NO_UPDATE_CHECK="1")
     cmd = [sys.executable, BUILD, out] + ([] if tour else ["--no-tour"])
     r = subprocess.run(cmd, env=env, capture_output=True, text=True)
     if r.returncode:

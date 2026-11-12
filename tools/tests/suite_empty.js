@@ -154,9 +154,21 @@
       $("#tbmore").click();
       ok("more menu opens with the tour and the theme switch", !$("#tbmenu").hidden && $("#tbmore").getAttribute("aria-expanded") === "true" && !!$("#tbmenu #onb-open") && $$("#tbmenu [data-theme-set]").length === 3);
       ok("the menu is Settings, with a gear icon", $("#tbmore").getAttribute("aria-label") === "Settings" && !!$("#tbmore svg circle[r='3']") && !$("#tbmore svg circle[r='1.6']"));
-      ok("Send one lives in Settings, not in the sidebar, and the hourly switch stays", !!$("#tbmenu #pep-now") && !$(".sidebar #pep-now") && !!$(".sidebar #pep-on") && !/Send one/.test($(".sidebar").textContent));
-      $("#pep-now").click();
-      ok("Send me one now opens a pep talk and closes the menu", $("#pep").open && $("#tbmenu").hidden); $("#pep-x").click();
+      ok("the hourly pep talk switch lives in Settings and Send me one now is gone", !!$("#tbmenu #pep-on") && !$(".sidebar #pep-on") && !$("#pep-now") && !/Send me one now/.test($("#tbmenu").textContent));
+      ok("the side nav bottom shows the version and no update notice when current", /^Version \d+\.\d+/.test($(".sidebar #verl").textContent) && $("#updn").hidden);
+      APP_BUILD.behind = 2; APP_BUILD.latest = "9.9.9"; renderVersion();
+      ok("an Update available note appears when the build says it is behind", !$("#updn").hidden && /9\.9\.9/.test($("#updv").textContent));
+      ok("the update prompt pulls, explains the changelog and rebuilds without touching your data", /git pull/.test(updatePrompt()) && /CHANGELOG\.md/.test(updatePrompt()) && /Do not change tracker\.csv/.test(updatePrompt()));
+      APP_BUILD.behind = 0; APP_BUILD.latest = ""; renderVersion();
+      ok("every Claude Code prompt starts with the read-only update check", [crawlPrompt(), marketPrompt(), TASKS.filter(x => x.where === "claude-code").map(x => x.prompt).join("\n")].every(x => /read-only update check/.test(x)) && TASKS.filter(x => x.where === "claude-code").every(x => x.prompt.startsWith("First, a read-only update check")) && onbPrompts().every(x => x.p.startsWith("First, a read-only update check")));
+      {
+        setView("list"); state.q = ""; savePlace();
+        const saved = JSON.parse(localStorage.getItem("jt-place") || "null");
+        ok("the place you were at is saved", saved && saved.v === "list");
+        setView("overview"); placeDone = false; placeData = null; applyPlace();
+        ok("coming back restores the screen you were on", state.view === "list" && !$("#tab-list").hidden);
+        setView("overview");
+      }
       $("#tbmore").click();
       document.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape", bubbles: true }));
       ok("Escape closes the menu", $("#tbmenu").hidden && $("#tbmore").getAttribute("aria-expanded") === "false");
