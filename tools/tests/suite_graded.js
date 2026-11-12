@@ -10,7 +10,8 @@
     ok("rubric uses profile.json values", /\$90K/.test(rb) && /Austin, TX/.test(rb) && /\$110K/.test(rb) && /Data Analyst/.test(rb) && !/140K/.test(rb) && !bad.test(rb));
     $("[data-v=list]").click();
     ok("listing shows the role as a preview card", $$("#plist .pc").length === 1 && /Acme Analytics/.test($("#plist").textContent) && /Senior Data Analyst/.test($("#plist").textContent));
-    ok("decision pill is computed from the grades", /Apply now|Consider|Research first|Skip/.test($("#plist .pc .badge.gr").textContent), $("#plist .pc").textContent);
+    ok("match tag is computed from the grades", /Match: .*(Apply now|Consider|Research first|Skip)/.test($("#plist .pc .mtag").textContent), $("#plist .pc").textContent);
+    ok("card shows the status pill top right and the match tag in the bottom row", /Not applied|New/i.test($("#plist .pc .r1 .badge.st").textContent) && !!$("#plist .pc .r3 .mtag"));
     ok("Fit, Opportunity and Confidence chips render", $$("#list .sc").length === 3 && /Fit/.test($("#list .score").textContent) && /Opportunity/.test($("#list .score").textContent));
     ok("gates summary renders", /gates pass|gates not passed/.test($("#list details.gates summary").textContent));
     ok("strengths-and-gaps web has 8 axes", $$("#list .jweb .wd").length === 8 && /Skills/.test($("#list .jweb").textContent));
@@ -20,18 +21,19 @@
     ok("detail has Tailor, Letter and Ask buttons", !!$("[data-tailor]") && !!$("[data-cover]") && !!$("[data-ask]"));
     $("[data-tailor]").click();
     ok("without a résumé, Tailor asks for one instead of failing", /Add your résumé first/.test($("#trbody").textContent)); $("#shclose").click();
-    // "Apply now" badge goes away once a role is applied to
+    // status is a fact (solid pill), match is a suggestion (dashed tag) and fades once you act on the role
     {
-      const r0 = ROLES[0], badges = () => $$("#list .pc .badge.gr, #list .head .badge.gr").map(b => b.textContent).join("|");
-      ok("fixture role is graded Apply now and not yet applied", decisionOf(r0) === "apply" && statusOf(r0.id) === "new" && /Apply now/.test(badges()), badges());
+      const r0 = ROLES[0], tag = () => $("#plist .pc .mtag"), hdr = () => $("#list .head .badge.st");
+      ok("fixture role is graded Apply now and not yet applied", decisionOf(r0) === "apply" && statusOf(r0.id) === "new" && /Apply now/.test(tag().textContent) && !tag().classList.contains("done"), tag().textContent);
+      ok("detail header shows the status pill and the match tag", !!hdr() && !!$("#list .meta .mtag"));
       const sel = $("[data-k=status]"); sel.value = "applied"; sel.dispatchEvent(new Event("change", { bubbles: true }));
       await new Promise(r => setTimeout(r, 300));
       ok("status is now Applied", statusOf(r0.id) === "applied");
-      ok("Apply now badge is hidden on the card and the detail header after applying", !/Apply now/.test(badges()), badges());
+      ok("the card status pill says Applied and the match tag stays but fades", /Applied/.test($("#plist .pc .r1 .badge.st").textContent) && /Apply now/.test(tag().textContent) && tag().classList.contains("done"), $("#plist .pc").textContent);
       ok("the grade still shows Fit and Opportunity", /Fit/.test($("#list .score").textContent) && /Opportunity/.test($("#list .score").textContent));
       const sel2 = $("[data-k=status]"); sel2.value = "new"; sel2.dispatchEvent(new Event("change", { bubbles: true }));
       await new Promise(r => setTimeout(r, 300));
-      ok("badge comes back when the role is set back to Not applied", /Apply now/.test(badges()), badges());
+      ok("match tag is full strength again when the role is set back to Not applied", !tag().classList.contains("done"), tag().className);
     }
     // KPI filters
     $("[data-v=overview]").click();
