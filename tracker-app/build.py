@@ -13,10 +13,46 @@ Reads, relative to the repo root:
 
 Writes one self-contained HTML file. See docs/tracker-csv.md for the CSV columns.
 """
-import csv, datetime, json, os, re, sys
+import csv, datetime, json, os, re, subprocess, sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.environ.get("FTF_ROOT") or os.path.dirname(HERE)  # FTF_ROOT lets the tests build from fixture data
+
+
+CODE_ROOT = os.path.dirname(HERE)  # where the tracker code (and its VERSION file) lives
+
+
+def app_info():
+    """Version of this copy, and whether the repo has newer commits. Never fails the build, never changes files."""
+    info = {"v": "", "behind": 0, "latest": ""}
+    try:
+        info["v"] = open(os.path.join(CODE_ROOT, "VERSION"), encoding="utf-8").read().strip()[:20]
+    except OSError:
+        pass
+    # the notice Claude Code wrote with tools/check_update.py (newer than this copy, or it is ignored)
+    try:
+        n = json.load(open(os.path.join(ROOT, "logs", "update-notice.json"), encoding="utf-8"))
+        vt = lambda s: tuple(int(x) for x in re.findall(r"\d+", str(s))[:3])
+        if n.get("update") and info["v"] and vt(n.get("latest", "")) > vt(info["v"]):
+            lst = lambda k, m: [str(x)[:300] for x in (n.get(k) or []) if isinstance(x, str)][:m]
+            info.update(latest=str(n["latest"])[:20], notice={"checked": str(n.get("checked", ""))[:10], "changes": lst("changes", 12), "steps": lst("steps", 8)})
+    except (OSError, ValueError, AttributeError):
+        pass
+    if os.environ.get("FTF_NO_UPDATE_CHECK") or not os.path.isdir(os.path.join(CODE_ROOT, ".git")):
+        return info
+    try:
+        run = lambda *a: subprocess.run(["git", "-C", CODE_ROOT, *a], capture_output=True, text=True, timeout=8)
+        run("fetch", "--quiet")
+        n = run("rev-list", "--count", "HEAD..@{u}")
+        if n.returncode == 0 and n.stdout.strip().isdigit():
+            info["behind"] = int(n.stdout.strip())
+        if info["behind"]:
+            lv = run("show", "@{u}:VERSION")
+            if lv.returncode == 0:
+                info["latest"] = lv.stdout.strip()[:20]
+    except (OSError, subprocess.SubprocessError):
+        pass
+    return info
 
 
 def first_existing(*names):
@@ -73,12 +109,31 @@ def posting(rf):
         return ""
     out = []
     for ln in open(p, encoding="utf-8").read().split("\n"):
-        if ln.startswith("Verification note") or ln.startswith("## Verification"):
+        if ln.startswith("Verification note") or ln.startswith("## Verification") or ln.strip().lower().startswith("## posting text"):
             break
         if re.match(r"- \*\*(Fit score|Strengths matched|Gaps)", ln) or ln.startswith("- **Direct apply"):
             continue
         out.append(ln.replace("**", ""))
     return re.sub(r"\n{2,}", "\n", "\n".join(out)).strip()[:3500]
+
+
+def section(rf, heading, stop_at_posting=False, cap=2500):
+    """The text under one '## heading' in a role file."""
+    if not rf:
+        return ""
+    p = rf if os.path.isabs(rf) else os.path.join(ROOT, rf)
+    if not os.path.exists(p):
+        return ""
+    out, on = [], False
+    for ln in open(p, encoding="utf-8").read().split("\n"):
+        if ln.strip().lower().startswith("## " + heading):
+            on = True
+            continue
+        if on and ln.startswith("## "):
+            break
+        if on:
+            out.append(ln.replace("**", ""))
+    return re.sub(r"\n{3,}", "\n\n", "\n".join(out)).strip()[:cap]
 
 
 def build(out_path, tour=True):
@@ -153,7 +208,7 @@ def build(out_path, tour=True):
             yrs=clean(r.get("years_required"), 130), edu=clean(r.get("education_language"), 160),
             fit=r.get("fit_score_10", ""), url=r.get("apply_link", ""), file=rf, ext=ext,
             new=bool(re.search(r"\bNew in the .* crawl", notes)), pm=paymid(r.get("posted_pay")),
-            seed=seed, ord=order, g=None, g2=g2, post=posting(rf)))
+            seed=seed, ord=order, g=None, g2=g2, post=posting(rf), full=section(rf, "posting text", cap=12000)))
     roles.sort(key=lambda x: (x["tier"], x["ord"]))
 
     tpl = open(os.path.join(HERE, "template.html"), encoding="utf-8").read()
@@ -162,7 +217,7 @@ def build(out_path, tour=True):
         return json.dumps(v, ensure_ascii=False).replace("</", "<\\/").replace("<!--", "<\\!--")
 
     html = (tpl.replace("__ROLES__", js(roles)).replace("__PROFILE__", js(profile if isinstance(profile, dict) else {}))
-            .replace("__CRAWLS__", js(crawls if isinstance(crawls, list) else [])).replace("__ONB_AUTO__", "true" if tour else "false"))
+            .replace("__CRAWLS__", js(crawls if isinstance(crawls, list) else [])).replace("__ONB_AUTO__", "true" if tour else "false").replace("__APP__", js(app_info())))
     os.makedirs(os.path.dirname(os.path.abspath(out_path)), exist_ok=True)
     open(out_path, "w", encoding="utf-8").write(html)
     print(f"built {out_path} with {len(roles)} role(s) from {os.path.relpath(csv_path, ROOT)}")

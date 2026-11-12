@@ -56,6 +56,22 @@ The tracker itself is free. The AI runs on your Claude account, so that part has
 5. Add your first role and let the grading do its thing.
 6. When you want new roles, click **Crawl** at the top, choose your sources, copy the prompt and paste it into Claude Code.
 
+## Updating
+
+Your tracker is a copy of this repository, so it does not update by itself.
+
+1. In the project folder, run `git pull` (or ask Claude Code to).
+2. Rebuild and republish the page: `python3 tracker-app/build.py tracker-app/dist/index.html`, then publish it (the Rebuild task in Help has the prompt).
+3. Read `CHANGELOG.md` for what changed and any step for your existing roles.
+
+**How you find out there is an update**
+- Every prompt you paste into Claude Code starts with an update check: Claude runs `python3 tools/check_update.py`, which compares your `VERSION` with the repository and tells you in one line whether an update is available. It never pulls or changes anything else without your yes.
+- When there is an update, the check writes `logs/update-notice.json` (what is new, copied from `CHANGELOG.md`). The next time the page is rebuilt, an **Update available** button appears under the version at the bottom of the side nav. Click it to read what is new, then **Copy update prompt** and paste it into Claude Code. That prompt pulls the new version, explains what changed, and rebuilds the page.
+- `build.py` also prints a notice when you are behind.
+- On GitHub, choose Watch, then Custom, then Releases to get an email for each release.
+
+The page only knows your update status as of its last build. Your roles, grades, profile and logs are not tracked by git, so an update never overwrites them.
+
 ## Make it yours
 
 Built for designers first, but it is meant to be reverse engineered:

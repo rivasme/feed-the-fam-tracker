@@ -81,6 +81,49 @@ r = run([os.path.join(REPO, "tracker-app", "build.py"), page], root)
 check("build.py falls back to tracker.example.csv when tracker.csv is missing", r.returncode == 0 and "tracker.example.csv" in r.stdout and "with 0 role(s)" in r.stdout, r.stdout + r.stderr)
 check("the repo itself has no tracker.csv", not os.path.exists(os.path.join(REPO, "tracker.csv")))
 
+# ---- check_update.py against a throwaway origin and clone
+ud = tempfile.mkdtemp(prefix="ftf-upd-")
+def sh(*a, cwd=None):
+    return subprocess.run(a, cwd=cwd, capture_output=True, text=True, env=dict(os.environ, GIT_AUTHOR_NAME="t", GIT_AUTHOR_EMAIL="t@example.com", GIT_COMMITTER_NAME="t", GIT_COMMITTER_EMAIL="t@example.com"))
+origin, clone = os.path.join(ud, "origin.git"), os.path.join(ud, "clone")
+sh("git", "init", "-q", "--bare", "-b", "main", origin)
+work = os.path.join(ud, "work")
+sh("git", "clone", "-q", origin, work)
+os.makedirs(os.path.join(work, "tools"))
+shutil.copy(os.path.join(REPO, "tools", "check_update.py"), os.path.join(work, "tools", "check_update.py"))
+open(os.path.join(work, "VERSION"), "w").write("1.0.0\n")
+open(os.path.join(work, "CHANGELOG.md"), "w").write("# Changelog\n\n## 1.0.0\n\nFirst release.\n")
+sh("git", "add", "-A", cwd=work); sh("git", "commit", "-q", "-m", "v1", cwd=work); sh("git", "push", "-q", "origin", "main", cwd=work)
+sh("git", "clone", "-q", origin, clone)
+cu = [sys.executable, os.path.join(clone, "tools", "check_update.py")]
+env2 = {k: v for k, v in os.environ.items() if k != "FTF_ROOT"}
+r = subprocess.run(cu, capture_output=True, text=True, env=env2)
+check("check_update says up to date and writes update:false", "UP TO DATE 1.0.0" in r.stdout and json.load(open(os.path.join(clone, "logs", "update-notice.json")))["update"] is False, r.stdout + r.stderr)
+open(os.path.join(work, "VERSION"), "w").write("1.1.0\n")
+open(os.path.join(work, "CHANGELOG.md"), "w").write("# Changelog\n\n## 1.1.0\n\n**What changed for you**\n- **Big thing.** It is better now.\n- Small thing.\n\n**Claude Code will offer to do this after you update**\n- Rebuild the page.\n\n**If you update by hand**\n1. Pull it yourself.\n\n## 1.0.0\n\nFirst release.\n")
+sh("git", "add", "-A", cwd=work); sh("git", "commit", "-q", "-m", "v1.1", cwd=work); sh("git", "push", "-q", "origin", "main", cwd=work)
+r = subprocess.run(cu, capture_output=True, text=True, env=env2)
+n = json.load(open(os.path.join(clone, "logs", "update-notice.json")))
+check("check_update finds the newer version and copies the changelog entries", "UPDATE AVAILABLE 1.0.0 -> 1.1.0" in r.stdout and n["update"] and n["latest"] == "1.1.0" and n["changes"] == ["Big thing. It is better now.", "Small thing."] and n["steps"] == ["Rebuild the page."], r.stdout + json.dumps(n))
+check("check_update did not pull or change tracked files", open(os.path.join(clone, "VERSION")).read().strip() == "1.0.0")
+os.makedirs(os.path.join(clone, "tracker-app"))
+shutil.copy(os.path.join(REPO, "tracker-app", "build.py"), os.path.join(clone, "tracker-app", "build.py")); shutil.copy(os.path.join(REPO, "tracker-app", "template.html"), os.path.join(clone, "tracker-app", "template.html")); shutil.copy(os.path.join(REPO, "tracker.example.csv"), clone)
+r = subprocess.run([sys.executable, os.path.join(clone, "tracker-app", "build.py"), os.path.join(ud, "p.html")], capture_output=True, text=True, env=dict(env2, FTF_NO_UPDATE_CHECK="1"))
+ph = open(os.path.join(ud, "p.html")).read() if os.path.exists(os.path.join(ud, "p.html")) else ""
+check("build.py bakes the notice into the page", r.returncode == 0 and '"latest": "1.1.0"' in ph and "Big thing. It is better now." in ph, r.stdout + r.stderr)
+
+open(os.path.join(work, "VERSION"), "w").write("1.2.0\n")
+cl = open(os.path.join(work, "CHANGELOG.md")).read()
+newest = "# Changelog\n\n## 1.2.0\n\n**What changed for you**\n- Newest thing.\n\n**Claude Code will offer to do this after you update**\n- Newest step.\n\n## 1.1.1\n\n**What changed for you**\n- Patch fix.\n\n"
+open(os.path.join(work, "CHANGELOG.md"), "w").write(newest + cl[cl.index("## 1.1.0"):])
+sh("git", "add", "-A", cwd=work); sh("git", "commit", "-q", "-m", "v1.2", cwd=work); sh("git", "push", "-q", "origin", "main", cwd=work)
+open(os.path.join(clone, "VERSION"), "w").write("1.0.0\n")
+r = subprocess.run(cu, capture_output=True, text=True, env=env2)
+n = json.load(open(os.path.join(clone, "logs", "update-notice.json")))
+check("skipping versions: the notice includes every version since yours, not only the latest", "1.0.0 -> 1.2.0" in r.stdout and n["changes"][:2] == ["Newest thing.", "Patch fix."] and "Big thing. It is better now." in n["changes"] and "Newest step." in n["steps"] and not any("by hand" in x for x in n["steps"]), json.dumps(n))
+os.remove(os.path.join(clone, "VERSION")); r = subprocess.run(cu, capture_output=True, text=True, env=env2)
+check("check_update says it could not check when VERSION is missing", "COULD NOT CHECK" in r.stdout, r.stdout)
+
 bad = [n for n, ok in results if not ok]
 print(f"\n{len(results) - len(bad)} passed, {len(bad)} failed")
 sys.exit(1 if bad else 0)

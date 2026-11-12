@@ -383,7 +383,7 @@ body{padding:0;min-height:100vh;background:radial-gradient(900px 600px at 6% -8%
 .theme{display:flex;background:var(--muted);border-radius:11px;padding:3px;gap:2px}
 .theme button{flex:1;appearance:none;border:0;background:transparent;border-radius:8px;padding:5px 6px;font:inherit;font-size:12px;font-weight:500;color:var(--muted-foreground);cursor:pointer}
 .theme button[aria-pressed="true"]{background:var(--popover);color:var(--foreground);box-shadow:0 1px 3px rgba(0,0,0,.18)}
-.main{min-width:0;padding:30px clamp(16px,3vw,40px) 72px;display:flex;flex-direction:column;gap:16px;max-width:1320px;width:100%}
+.main{min-width:0;padding:30px clamp(16px,3vw,40px) 72px;display:flex;flex-direction:column;gap:16px;max-width:1320px;width:100%;margin-inline:auto}
 .pghead h1{font-size:30px;letter-spacing:-.03em}
 /* glass surfaces */
 .insw,.tlc,.role,.stat,#snip,#ivc,.chatwrap,.pc{background:var(--card);-webkit-backdrop-filter:blur(18px) saturate(160%);backdrop-filter:blur(18px) saturate(160%);border:1px solid var(--border);box-shadow:var(--shadow)}
@@ -508,8 +508,6 @@ details.gates>summary{font-weight:500;color:var(--foreground)}
 .pc .r1 .co{flex:1 1 auto}
 
 /* pep talk: iMessage-style popup */
-.pepc{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:12px;color:var(--muted-foreground)}
-.pepc .btn{height:26px;padding:0 10px;font-size:12px}
 .sw{display:inline-flex;align-items:center;gap:7px;cursor:pointer}
 .sw input{appearance:none;width:30px;height:18px;border-radius:9999px;background:var(--input);position:relative;margin:0;cursor:pointer;transition:background .15s;flex:none}
 .sw input::after{content:"";position:absolute;top:2px;left:2px;width:14px;height:14px;border-radius:50%;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.3);transition:transform .15s}
@@ -535,7 +533,6 @@ dialog#pep{width:min(380px,calc(100vw - 32px));padding:16px 16px 14px;margin:max
   .pep-bub:not([hidden]){animation:pepbub .28s ease-out}
   @keyframes pepbub{from{transform:scale(.9);opacity:0;transform-origin:left bottom}to{transform:none;opacity:1}}
 }
-@media (max-width:860px){.pepc{display:none}}
 
 /* per-role strengths and gaps web */
 .webrow{display:grid;grid-template-columns:minmax(250px,330px) minmax(0,1fr);gap:20px 24px;align-items:start}
@@ -661,7 +658,7 @@ dialog h2,.sh2 h2,.h2{font-size:var(--fs-h2);font-weight:600;letter-spacing:-.02
 .content{min-width:0;display:flex;flex-direction:column}
 .main{padding-top:20px}
 .topbar{position:sticky;top:0;z-index:15;background:var(--glass);-webkit-backdrop-filter:blur(28px) saturate(170%);backdrop-filter:blur(28px) saturate(170%);border-bottom:1px solid var(--border)}
-.tb-in{max-width:1320px;padding:12px var(--mx);display:flex;align-items:center;gap:16px}
+.tb-in{max-width:1320px;margin-inline:auto;padding:12px var(--mx);display:flex;align-items:center;gap:16px}
 .tb-t{min-width:0;flex:1 1 auto}
 .tb-t h1{margin:0;font-size:var(--fs-h2);font-weight:700;letter-spacing:-.02em;line-height:1.2}
 .tb-t .sub{margin:2px 0 0;font-size:var(--fs-cap);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -761,6 +758,41 @@ dialog#crawl{width:min(580px,calc(100vw - 32px));max-height:calc(100dvh - 32px);
 .mynote textarea{flex:1;width:100%;min-height:84px;border:0;background:transparent;box-shadow:none;padding:0;margin:0;resize:vertical;font:inherit;font-size:var(--fs-body);line-height:1.5;color:var(--foreground);outline:none}
 .mynote textarea::placeholder{color:var(--muted-foreground)}
 @media (max-width:520px){.dstat,.dstat select{width:100%}.dopen{margin-left:0;flex:1 1 100%}}
+/* status = fact (solid pill, dot); match = suggestion (dashed, neutral, labeled, urgency-colored) */
+.badge.st.solid{background:color-mix(in srgb,var(--c) 20%,transparent);font-weight:600}
+.pc .r1 .badge.st{font-size:11px;line-height:16px;padding:0 8px;white-space:nowrap;flex:none}
+.mtag{display:inline-flex;align-items:center;gap:3px;border-radius:6px;border:1px dashed var(--input);padding:0 7px;font-size:11px;line-height:18px;font-weight:500;color:var(--muted-foreground);white-space:nowrap;background:transparent}
+.mtag.m-apply{--c:var(--c-offer);color:var(--c);border-color:color-mix(in srgb,var(--c) 65%,transparent);background:color-mix(in srgb,var(--c) 14%,transparent);font-weight:600}
+.mtag.m-consider{--c:var(--c-applied);color:var(--c);border-color:color-mix(in srgb,var(--c) 50%,transparent);background:color-mix(in srgb,var(--c) 8%,transparent)}
+.mtag.m-research{--c:var(--c-interview);color:var(--c);border-color:color-mix(in srgb,var(--c) 45%,transparent);background:color-mix(in srgb,var(--c) 6%,transparent)}
+.mtag.m-skip,.mtag.m-unrated{color:var(--muted-foreground)}
+.mtag.done{opacity:.6}
+.meta .mtag{font-size:12px;line-height:20px}
+/* strengths and gaps: one card, graph left, lists right, plain accordion below */
+#insbody{display:block}
+.insx{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:28px;align-items:start;padding:18px 20px}
+.insl,.insr{min-width:0}
+.hgx{margin:14px 4px 0}
+.hgx>summary{cursor:pointer;font-size:13px;font-weight:500;color:var(--muted-foreground);width:fit-content}
+.hgx>summary:hover{color:var(--foreground)}
+.hg{margin:10px 0 0;padding-left:20px;font-size:13px;display:flex;flex-direction:column;gap:6px;color:var(--muted-foreground)}
+.hg b{color:var(--foreground)}
+@media (max-width:900px){.insx{grid-template-columns:minmax(0,1fr)}}
+/* version and update notice (side nav bottom) */
+.verbox{display:flex;flex-direction:column;gap:8px;font-size:12px;color:var(--muted-foreground)}
+.verl{font-family:var(--font-data);font-size:11px}
+.updbtn{height:auto;min-height:28px;padding:4px 8px;margin-left:-8px;font-size:12px;font-weight:600;justify-content:flex-start;gap:7px;text-align:left;color:var(--c-applied)}
+.updbtn:hover{background:color-mix(in srgb,var(--c-applied) 12%,transparent);color:var(--c-applied)}
+.updbtn svg{width:15px;height:15px;flex:none}
+.updbtn[hidden]{display:none}
+dialog#upd{width:min(560px,calc(100vw - 32px));max-height:calc(100dvh - 32px);overflow:auto}
+#upd ul,#upd ol{margin:6px 0 0;padding-left:20px;display:flex;flex-direction:column;gap:5px;font-size:14px}
+#upd h3{margin:16px 0 0;font-size:var(--fs-h3);font-weight:600}
+#upd .cq-foot{flex-wrap:wrap;justify-content:flex-end}#upd .cq-foot .grow{flex:1 1 100%}
+#upd .lead{margin:0;font-size:14px;color:var(--muted-foreground)}
+.lnk{background:none;border:0;padding:0;font:inherit;font-size:12px;color:var(--muted-foreground);text-decoration:underline;cursor:pointer}
+.lnk:hover{color:var(--foreground)}
+.mi-sw{display:flex;align-items:center;gap:8px;padding:6px 10px;font-size:13px;color:var(--foreground);cursor:pointer}
 </style>
 
 
@@ -784,7 +816,7 @@ dialog#crawl{width:min(580px,calc(100vw - 32px));max-height:calc(100dvh - 32px);
     </div>
     <div class="side-foot">
       <span class="conns" id="conns" role="group" aria-label="Connections" hidden></span><span id="ivcnt" hidden></span>
-      <div class="pepc"><label class="sw"><input type="checkbox" id="pep-on" checked><span>Hourly pep talk</span></label></div>
+      <div class="verbox" id="verbox"><span class="verl" id="verl"></span><button class="btn ghost updbtn" type="button" id="updn" hidden aria-haspopup="dialog"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a9 9 0 1 1-2.64-6.36"/><path d="M21 4v5h-5"/><path d="M12 8v5m0-5-2 2m2-2 2 2"/></svg><span id="updv"></span></button></div>
     </div>
   </aside>
   <div class="content">
@@ -803,7 +835,7 @@ dialog#crawl{width:min(580px,calc(100vw - 32px));max-height:calc(100dvh - 32px);
             <span class="lab">Appearance</span>
             <div class="theme" role="group" aria-label="Theme"><button type="button" data-theme-set="auto" aria-pressed="true">Auto</button><button type="button" data-theme-set="light" aria-pressed="false">Light</button><button type="button" data-theme-set="dark" aria-pressed="false">Dark</button></div>
             <span class="lab">Pep talk</span>
-            <button class="mi" type="button" id="pep-now">Send me one now</button>
+            <label class="sw mi-sw"><input type="checkbox" id="pep-on" checked><span>Hourly pep talk</span></label>
           </div>
         </div>
       </div>
@@ -894,6 +926,16 @@ dialog#crawl{width:min(580px,calc(100vw - 32px));max-height:calc(100dvh - 32px);
   </div>
 </dialog>
 
+<dialog id="upd" aria-labelledby="updt">
+  <div class="sh2" style="padding:0 0 8px"><h2 id="updt">Update available</h2><button class="btn ghost" type="button" id="updx">Close</button></div>
+  <p class="lead" id="updlead"></p>
+  <h3>What's new</h3><ul id="updlist"></ul>
+  <div id="updstepsw" hidden><h3>Claude Code will also offer to</h3><ul id="updsteps"></ul></div>
+  <h3>How to update</h3>
+  <ol><li>Click <b>Copy update prompt</b> below.</li><li>Open Claude Code in your project folder and paste it. Press Enter.</li><li>Claude Code pulls the new version, tells you what changed, rebuilds the page and gives you the link. Open it and reload.</li></ol>
+  <p class="cq-lede" style="margin:12px 0 0">Your roles, grades, profile and logs are not touched. Claude Code stops and asks first if you edited any tracked file.</p>
+  <div class="cq-foot"><div class="grow"><button class="linkbtn" type="button" data-ccg="1">New to Claude Code?</button><button class="linkbtn" type="button" id="updgh">Full changelog on GitHub</button></div><button class="btn" type="button" id="updno">Not now</button><button class="btn pri" type="button" id="updcopy">Copy update prompt</button></div>
+</dialog>
 <dialog id="crawl" aria-labelledby="crt">
   <div class="sh2" style="padding:0 0 8px"><h2 id="crt">Crawl for new roles</h2><button class="btn ghost" type="button" id="crx">Close</button></div>
   <p class="cq-lede">Claude Code does the searching. This page can't run it, so copy the prompt and paste it into Claude Code opened in your project folder. The prompt tells it to only read: nothing is sent, posted or applied. A source that isn't connected is skipped.</p>
@@ -966,6 +1008,7 @@ dialog#crawl{width:min(580px,calc(100vw - 32px));max-height:calc(100dvh - 32px);
 const ROLES = __ROLES__;
 const PROFILE_BUILD = __PROFILE__;
 const CRAWLS_BUILD = __CRAWLS__;
+const APP_BUILD = __APP__;
 const STATUSES=[["new","Not applied","--c-new"],["applied","Applied","--c-applied"],["interview","Interviewing","--c-interview"],["offer","Offer","--c-offer"],["rejected","Rejected","--c-rejected"],["passed","Not for me","--c-passed"]];
 const SMAP=Object.fromEntries(STATUSES.map(s=>[s[0],s]));
 const TIERS={1:"Tier 1: apply first",2:"Tier 2: apply next",3:"Tier 3: stretch",4:"New: found by a crawl, not yet applied",9:"Other applications and roles you added"};
@@ -1000,6 +1043,9 @@ function normResume(d){
   return{name:strv(d.name,80),headline:strv(d.headline,200),contact:strv(d.contact,240),summary:strv(d.summary,900),exp,skills,cert:strv(d.cert,300)};
 }
 const PROJECT="the project folder";
+const APP_V=(typeof APP_BUILD==="object"&&APP_BUILD&&APP_BUILD.v)||"";
+const UPD_STEP=()=>`First, check whether this tracker has an update (read-only apart from one notice file): run python3 tools/check_update.py in the project folder. It compares the VERSION file${APP_V?" (this page was built from version "+APP_V+")":""} with the repository and writes logs/update-notice.json. Tell me its one-line answer in plain words: an update is available (from which version to which) or it is up to date. If an update is available, show me the what-is-new lines it found, say the update note will appear under the version in the page's side nav after the next rebuild, and ask whether I want to update now. Do not run git pull or change any other file for this check without my yes, and carry on with the task below either way. If the script is missing or fails, say so in one line and carry on.\n\n`;
+const withUpd=x=>UPD_STEP()+x;
 const CSV_RULE="If tracker.csv does not exist, copy tracker.example.csv to tracker.csv first (tracker.csv is your own file and is never committed).";
 let RESUME=emptyResume(),_mv=null,SS="";
 let FACTS=[],DONT=[],STRENGTHS=[],GAPS=[],AXES=[],CHIPS=[];
@@ -1043,7 +1089,7 @@ function removeDoc(id){ if(store) return enqueue(id,()=>store.doc(id).delete());
 function setBanner(t){const b=$("banner");b.hidden=!t;b.textContent=t||""}
 
 async function init(){
-  render();renderSnips();
+  render();renderSnips();applyPlace();
   try{
     const claude=window.claude;
     const [db,user]=await Promise.all([claude?claude.use("db"):null, claude?claude.use("user"):null]);
@@ -1055,13 +1101,14 @@ async function init(){
         snap.docs.forEach(d=>{const v=d.data()||{}; if(d.id.startsWith("c-")){custom.push({id:d.id,...v.role,tier:9})} saved[d.id]=v});
         state.saved=saved;state.custom=custom.sort((a,b)=>a.id<b.id?-1:1);
         if(!editing()){render();renderSnips()}
+        if(!placeDone)applyPlace();
       },e=>setBanner("Live sync stopped ("+e.code+"). Reload to reconnect."));
       return;
     }
   }catch(e){}
   try{const j=JSON.parse(localStorage.getItem(LS)||"null");if(j){state.saved=j.saved||{};state.custom=j.custom||[]}}catch(e){}
   setBanner("Saved in this browser only. Sign in to claude.ai to keep it across devices.");
-  render();renderSnips();
+  render();renderSnips();applyPlace();
 }
 const editing=()=>{const a=document.activeElement;return a&&(a.tagName==="TEXTAREA"||(a.tagName==="INPUT"&&a.id!=="q"))};
 
@@ -1196,7 +1243,7 @@ const gradeBadge=r=>{
   const v=evOf(r);
   if(!v){const o=gradeData(r);return o&&o.o?`<span class="badge" title="From the old system. Regrade to get a decision.">Old grade ${esc(o.o)} (migrated)</span>`:""}
   const d=decisionOf(r),D=DECS[d],ov=d!==v.decision;
-  return (hideApplyBadge(r)?"":`<span class="badge gr" style="--c:var(${D[2]})" title="Decision">${D[1]} ${D[0]}${ov?" (overridden)":""}</span>`)+
+  return `<span class="badge gr" style="--c:var(${D[2]})" title="Decision">${D[1]} ${D[0]}${ov?" (overridden)":""}</span>`+
    (d==="unrated"?"":`<span class="badge" title="Fit: can you win it. Opportunity: is it worth having.">Fit <b>${v.fit}</b> · Opportunity <b>${v.opp}</b></span><span class="badge" title="How sure the grade is">Confidence: ${v.conf}</span>`)+
    (legitOf(r).length?`<span class="badge" style="color:var(--c-interview);border-color:color-mix(in srgb,var(--c-interview) 45%,var(--border))" title="The posting has details worth a second look">Check this posting</span>`:"");
 };
@@ -1399,7 +1446,7 @@ Remote: ${r.rem||"not stated"}
 Years asked: ${r.yrs||"not stated"}
 Education: ${r.edu||"not stated"}
 Saved notes and quotes:
-${(r.post||"").slice(0,3500)||"none"}
+${(r.post||"").slice(0,3500)||"none"}${r.full?"\nFull posting text saved at crawl time:\n"+r.full.slice(0,6000):""}
 Your notes: ${myNote(id).slice(0,500)||"none"}
 
 Reply with JSON only, no code fence: {"gates":{"pay":{"r":"pass","q":"quote"},"remote":{"r":"unknown","q":"not stated"},"type":{},"degree":{},"elig":{},"live":{},"avoid":{},"interm":{}},"fit":{"skills":"B","seniority":"A","domain":"B"},"opp":{"comp":"B","loc":"C","level":"A","stage":null},"reqs":[{"req":"quoted requirement","type":"must","status":"supported","ev":"fact name or none"}],"legit":[{"obs":"observation","quote":"quote"}],"why":["2 or 3 short plain bullets"],"match":["top matched strengths by name"],"gaps":["top gaps for this role"]}`;
@@ -1411,7 +1458,7 @@ Reply with JSON only, no code fence: {"gates":{"pay":{"r":"pass","q":"quote"},"r
     const reqs=(Array.isArray(j.reqs)?j.reqs:[]).slice(0,8).map(x=>({req:String(x&&x.req||"").slice(0,200),type:(x&&x.type)==="nice"?"nice":"must",status:["supported","partial","missing"].includes(x&&x.status)?x.status:"missing",ev:String(x&&x.ev||"none").slice(0,100)})).filter(x=>x.req);
     const cl=a=>(Array.isArray(a)?a:[]).map(x=>String(x).slice(0,200)).slice(0,3);
     const legit=(Array.isArray(j.legit)?j.legit:[]).slice(0,4).map(x=>({obs:String(x&&x.obs||"").slice(0,200),quote:String(x&&x.quote||"").slice(0,160)})).filter(x=>x.obs);
-    update(id,{g2:{gates,fit,opp,reqs,text:(r.post&&r.post.length>400)?"notes":"title",legit,why:cl(j.why),match:cl(j.match),gaps:cl(j.gaps),src:"regraded",date:today()}});
+    update(id,{g2:{gates,fit,opp,reqs,text:r.full?"full":(r.post&&r.post.length>400)?"notes":"title",legit,why:cl(j.why),match:cl(j.match),gaps:cl(j.gaps),src:"regraded",date:today()}});
     setBanner("");
   }catch(e){setBanner("Regrade failed: "+((e&&e.message)||"the reply could not be read")+". The old grade is unchanged.")}
   state.scoring=null;render();
@@ -1497,20 +1544,19 @@ const tagRow=(r,s)=>{
   return t.length?`<div class="tags">${t.join("")}</div>`:"";
 };
 const miniChips=r=>{const v=evOf(r);if(!v||decisionOf(r)==="unrated"||!v.fit)return "";return `<span class="mc" style="--c:var(${lc(v.fit)})" title="Fit"><small>Fit</small>${v.fit}</span><span class="mc" style="--c:var(${lc(v.opp)})" title="Opportunity"><small>Opp</small>${v.opp||"–"}</span>`};
-/* "Apply now" only makes sense before you apply: hide that badge once a role has any other status */
-const hideApplyBadge=r=>decisionOf(r)==="apply"&&statusOf(r.id)!=="new";
-const decPill=r=>{if(hideApplyBadge(r))return "";const D=DECS[decisionOf(r)]||DECS.unrated;return `<span class="badge gr" style="--c:var(${D[2]})">${D[1]} ${D[0]}</span>`};
+const statPill=r=>{const sc=SMAP[statusOf(r.id)];return `<span class="badge st solid" style="--c:var(${sc[2]})" title="Status: where this role stands"><i></i>${sc[1]}</span>`};
+const matchTag=r=>{const D=DECS[decisionOf(r)]||DECS.unrated;return `<span class="mtag m-${decisionOf(r)}${statusOf(r.id)!=="new"?" done":""}" title="Match: a suggestion from the grade, not an action you took">Match: ${D[1]} ${D[0]}</span>`};
 const previewCard=r=>{const s=statusOf(r.id),sc=SMAP[s];return `<button class="pc" type="button" data-sel="${esc(r.id)}" aria-current="${r.id===state.sel}">
-  <div class="r1"><span class="co">${esc(r.co)}</span>${decPill(r)}</div>
+  <div class="r1"><span class="co">${esc(r.co)}</span>${statPill(r)}</div>
   <div class="ti">${esc(r.title)}</div>
   <div class="r3"><span class="mono">${esc(r.pay||"pay not stated")}</span></div>
-  <div class="r3"><span class="badge st" style="--c:var(${sc[2]})"><i></i>${sc[1]}</span>${miniChips(r)}${r.new&&s==="new"?`<span class="tag blue">New</span>`:""}</div></button>`};
+  <div class="r3">${matchTag(r)}${miniChips(r)}${r.new&&s==="new"?`<span class="tag blue">New</span>`:""}</div></button>`};
 function detailHtml(r){
     const s=statusOf(r.id),g=get(r.id),sc=SMAP[s];
     return `<article class="role" style="--c:var(${sc[2]})" data-id="${esc(r.id)}">
       <button class="btn backbtn" type="button" data-back="1">&larr; All roles</button>
-      <div class="top"><div class="who"><div class="head"><span class="co">${esc(r.co)}</span>${decPill(r)}</div><div class="ti">${esc(r.title)}</div>
-        <div class="meta"><span class="mono">${esc(r.pay||"pay not stated")}</span>${r.level&&!/^not stated/i.test(r.level)?`<span>${esc(r.level)}</span>`:""}</div>
+      <div class="top"><div class="who"><div class="head"><span class="co">${esc(r.co)}</span>${statPill(r)}</div><div class="ti">${esc(r.title)}</div>
+        <div class="meta">${matchTag(r)}<span class="mono">${esc(r.pay||"pay not stated")}</span>${r.level&&!/^not stated/i.test(r.level)?`<span>${esc(r.level)}</span>`:""}</div>
         ${scoreRow(r)}${tagRow(r,s)}</div></div>
       <div class="dbar">
         <label class="dstat"><span class="flab">Status</span><select class="in" data-k="status" aria-label="Status for ${esc(r.co)}">${STATUSES.map(([k,l])=>`<option value="${k}"${k===s?" selected":""}>${l}</option>`).join("")}</select></label>
@@ -1682,7 +1728,8 @@ renderConns();checkConns();
 /* ---------- strengths and gaps ---------- */
 document.addEventListener("click",e=>{const b=e.target.closest("[data-ins]");if(!b)return;state.ins=b.dataset.ins;renderInsights()});
 document.addEventListener("click",async e=>{const b=e.target.closest("[data-hcopy-market]");if(!b)return;const ok=await copyText(marketPrompt());b.textContent=ok?"Copied":"Press Ctrl+C";setTimeout(()=>{b.textContent="Copy prompt: Run the market analysis"},1400)});
-const marketPrompt=()=>`In ${PROJECT}, run a market-fit analysis for me. Never invent evidence.
+const marketPrompt=()=>withUpd(marketPromptRaw());
+const marketPromptRaw=()=>`In ${PROJECT}, run a market-fit analysis for me. Never invent evidence.
 1. Read profile/strengths.md, grading/profile.md, profile/profile.json (if it exists), tracker.csv (or tracker.example.csv if tracker.csv does not exist) and every role file in roles/.
 2. Find what the postings ask for most (skills, tools, domains, years, outcomes, leadership, degree) and count how many role files ask for each.
 3. Score how well my documented evidence covers each area from 0 to 5, using only facts in my own files.
@@ -1692,8 +1739,21 @@ const marketPrompt=()=>`In ${PROJECT}, run a market-fit analysis for me. Never i
    "strengths": entries [name, what proves it, how often postings ask for it],
    "gaps": entries [name, what is missing, how often postings flag it].
 6. Rebuild the page: python3 tracker-app/build.py tracker-app/dist/index.html. This tool never applies to anything for me.`;
+/* graded live: your profile (fixed text) against the roles the grader marked Apply now or Consider */
+let INS_LIVE=null;
+function insightsLive(){
+  const graded=allRoles().filter(r=>evOf(r)&&decisionOf(r)!=="unrated");
+  const ideal=graded.filter(r=>{const d=decisionOf(r);return d==="apply"||d==="consider"});
+  const n=ideal.length,rx=k=>new RegExp(String(k).replace(/[.*+?^${}()|[\]\\]/g,"\\$&"),"i");
+  const words=t=>String(t).toLowerCase().split(/[^a-z0-9+#]+/).filter(w=>w.length>=5);
+  const hits=(t,key)=>{const w=words(t);return w.length?ideal.filter(r=>((g2Of(r)||{})[key]||[]).some(x=>{const l=String(x).toLowerCase();return w.some(q=>l.includes(q))})).length:0};
+  return{n,total:graded.length,all:allRoles().length,pct:c=>n?Math.round(100*c/n):0,
+    dem:AXES.map(a=>ideal.filter(r=>((g2Of(r)||{}).reqs||[]).some(q=>rx(a[3]||a[0]).test(String(q.req)))).length),
+    str:STRENGTHS.map(x=>hits(x[0],"match")),gap:GAPS.map(x=>hits(x[0],"gaps"))};
+}
 function renderInsights(){
   const el=$("insbody");if(!el)return;
+  const L=INS_LIVE=insightsLive();
   if(AXES.length<3&&!STRENGTHS.length&&!GAPS.length){
     el.innerHTML=`<div class="insw" style="grid-column:1/-1"><h2 class="h2">Strengths and gaps</h2><p class="rnote" style="margin:0 0 10px">Nothing to show yet. This tab compares your evidence with what the roles in your tracker actually ask for. It needs a market-fit analysis, which runs in Claude Code over your role files. Add some roles first, then copy this prompt.</p><div class="trbar"><span class="rtag cc">Runs in Claude Code</span><button class="btn pri" type="button" data-hcopy-market="1">Copy prompt: Run the market analysis</button></div><details class="ipq"><summary>Preview the prompt</summary><pre class="mono" style="white-space:pre-wrap;font-size:12px">${esc(marketPrompt())}</pre></details></div>`;
     return;
@@ -1712,17 +1772,25 @@ function renderInsights(){
     const[x,y]=pt(R+14,i),side=x>cx+10?"start":x<cx-10?"end":"middle",w=SH[i].split(" "),lines=w.length===2&&SH[i].length>9?w:[SH[i]];
     g+=`<text class="rl" x="${x.toFixed(1)}" y="${(y+4-(lines.length-1)*6.5).toFixed(1)}" text-anchor="${side}">`+lines.map((t,j)=>`<tspan x="${x.toFixed(1)}" dy="${j?13:0}">${esc(t)}</tspan>`).join("")+`</text>`;
   });
-  const li=(arr,c)=>`<ul>${arr.map(([t,b,m])=>`<li style="--c:var(${c})"><b>${esc(t)}</b>${esc(b)}<span class="cn">${esc(m)}</span></li>`).join("")}</ul>`;
-  el.innerHTML=`<div class="insw"><h2 class="h2">Evidence strength by skill area</h2><svg id="radar" viewBox="0 0 440 330" role="img" aria-label="Radar chart of evidence strength across ${AXES.length} skill areas, scored 0 to 5">${g}</svg>
-   <p class="rnote">Scale 0 (missing) to 5 (documented with outcomes). Dot color: green is a strength (4 and up), amber is partial, red is a gap (2.5 or below). The green area is where your evidence is strong and the red area is where it is thin. Scores come from your market-fit analysis (profile/market-fit-analysis.md), not from a test.</p>
-   </div><div class="insw"><div class="tabs" id="instabs" role="tablist" aria-label="Strengths or gaps"><button class="tab" role="tab" data-ins="s" aria-selected="${state.ins!=="g"}">Strengths (${STRENGTHS.length})</button><button class="tab" role="tab" data-ins="g" aria-selected="${state.ins==="g"}">Gaps (${GAPS.length})</button></div>
-   <div class="bl" style="margin-top:12px">${state.ins==="g"?li(GAPS,"--c-rejected"):li(STRENGTHS,"--c-offer")}</div>
-   <p style="margin:14px 0 0"><button class="btn" type="button" data-sheet="bd">See build ideas to close these gaps</button></p></div>`;
+  const li=(arr,c)=>`<ul>${arr.map(([t,b,m])=>`<li style="--c:var(${c})"><b>${esc(t)}</b>${esc(b)}${m?`<span class="cn">${esc(m)}</span>`:""}</li>`).join("")}</ul>`;
+  const SL=STRENGTHS.map((x,i)=>[x[0],x[1],L.n?`Matched on ${L.pct(L.str[i])}% of your ${L.n} ideal roles.`:(x[2]||"")]),GL=GAPS.map((x,i)=>[x[0],x[1],L.n?`Flagged on ${L.pct(L.gap[i])}% of your ${L.n} ideal roles.`:(x[2]||"")]);
+  el.innerHTML=`<div class="insw insx"><div class="insl"><h2 class="h2">Evidence strength by skill area</h2><svg id="radar" viewBox="0 0 440 330" role="img" aria-label="Radar chart of evidence strength across ${AXES.length} skill areas, scored 0 to 5">${g}</svg>
+   <p class="rnote">Scale 0 (missing) to 5 (documented with outcomes). Dot color: green is a strength (4 and up), amber is partial, red is a gap (2.5 or below). The green area is where your evidence is strong and the red area is where it is thin. Scores come from your market-fit analysis (profile/market-fit-analysis.md), not from the market. Hover a dot to see how often your ideal roles ask for that skill.</p>
+   </div><div class="insr"><div class="tabs" id="instabs" role="tablist" aria-label="Strengths or gaps"><button class="tab" role="tab" data-ins="s" aria-selected="${state.ins!=="g"}">Strengths (${STRENGTHS.length})</button><button class="tab" role="tab" data-ins="g" aria-selected="${state.ins==="g"}">Gaps (${GAPS.length})</button></div>
+   <div class="bl" style="margin-top:12px">${state.ins==="g"?li(GL,"--c-rejected"):li(SL,"--c-offer")}</div>
+   <p style="margin:14px 0 0"><button class="btn" type="button" data-sheet="bd">See build ideas to close these gaps</button></p></div></div>
+   <details class="hgx"><summary>How this is graded</summary><ol class="hg">
+     <li><b>Your evidence.</b> Each skill area on the radar is scored 0 to 5 from what your profile documents (profile/profile.json). These scores only change when you change the profile.</li>
+     <li><b>Your ideal roles.</b> The roles the grader marked Apply now or Consider. A role gets there by passing your gates (pay, remote, level and so on) and grading well on Fit (can you win it, based on your experience) and Opportunity (is it worth having). Right now that is <b>${L.n} of ${L.total} graded roles</b>${L.all>L.total?`. The other ${L.all-L.total} are not graded yet, so they are not counted. Run Grade new roles to include them`:""}.</li>
+     <li><b>Demand.</b> For each skill area, how many of your ideal roles list it in their requirements. This is a keyword match on each role's requirement list, and it is the "Asked for in" percentage on each radar dot.</li>
+     <li><b>Strengths.</b> How many of your ideal roles the grader's "why it matches" notes mention each strength from your profile (a keyword match on the strength's name).</li>
+     <li><b>Gaps.</b> How many of your ideal roles the grader flagged with each gap from your profile (a keyword match on the gap's name).</li>
+     <li><b>When it updates.</b> Every time you open this page, straight from the current grades. After a crawl, run Grade new roles and rebuild, and these numbers move.</li></ol></details>`;
 }
 (function(){
   const tip=document.getElementById("tip");
   const mv=e=>{const c=e.target.closest&&e.target.closest("#radar .rd");if(!c){return}
-    const a=AXES[+c.dataset.i];tip.innerHTML=`<b>${esc(a[0])}: ${a[1]} of 5</b>${esc(a[2])}`;tip.hidden=false;
+    const a=AXES[+c.dataset.i];const L=INS_LIVE,dm=L&&L.n?` Asked for in ${L.pct(L.dem[+c.dataset.i])}% of your ${L.n} ideal roles.`:"";tip.innerHTML=`<b>${esc(a[0])}: ${a[1]} of 5</b>${esc(a[2])}${dm}`;tip.hidden=false;
     const x=Math.min(e.clientX+14,innerWidth-tip.offsetWidth-8),y=Math.min(e.clientY+14,innerHeight-tip.offsetHeight-8);tip.style.left=Math.max(8,x)+"px";tip.style.top=Math.max(8,y)+"px"};
   document.addEventListener("pointermove",mv);document.addEventListener("pointerdown",mv);
 })();
@@ -1803,16 +1871,17 @@ renderInsights();renderBuild();
 const PAGE_URL=PROFILE().pageUrl||"";
 function profileCriteria(){const p=PROFILE(),mn=numK(p.min),tg=numK(p.target);return [p.titlesList.length&&"Target roles: "+p.titlesList.join(", "),p.levels.length&&"Level: "+p.levels.join(", "),(p.remote||p.city)&&"Location: "+(p.remote||"Remote")+(p.city?" ("+p.city+")":""),(mn||tg)&&"Pay: "+(mn?"minimum base $"+mn+"K":"")+(mn&&tg?", ":"")+(tg?"target $"+tg+"K":""),p.types.length&&"Employment: "+p.types.join(", "),p.avoid&&"Deal-breakers: "+p.avoid].filter(Boolean).join("\n")||"(none saved yet: use grading/profile.md)"}
 /* one registry feeds the Help drawer, the run-location tags and the copy buttons; move a task between "app" and "claude-code" here */
-function crawlPrompt(o){
+function crawlPrompt(o){return withUpd(crawlPromptBody(o))}
+function crawlPromptBody(o){
   o=o||{};const when=o.when||"since [DATE]",boards=o.boards!==false,oth=(o.other||"").trim(),ch=(o.slackCh||"").trim(),conn=!!(o.gmail||o.slack||oth);
-  let src=`Use three agents in parallel: employer job systems (Ashby, Greenhouse, Lever), remote job boards, and VC portfolio boards. Each writes results/<lane>.tsv and role files into a new folder new-crawlN/ (fit_score_10 left empty; follow grading/CRAWL-BRIEF.md and the TSV header in tools/merge_crawl.py).`;
+  let src=`Use three agents in parallel: employer job systems (Ashby, Greenhouse, Lever), remote job boards, and VC portfolio boards. Each writes results/<lane>.tsv and role files into a new folder new-crawlN/ (fit_score_10 left empty; follow grading/CRAWL-BRIEF.md and the TSV header in tools/merge_crawl.py). Each role file holds the fields, then a short ## Condensed section (what it is, responsibilities, must-haves, nice-to-haves, tools, pay and benefits, team and company, watch-outs), then the full posting under ## Posting text, so the role can be regraded later and used for a résumé, letter or interview prep.`;
   if(conn||!boards){
     const L=[];
     if(boards)L.push("- Job boards: employer job systems (Ashby, Greenhouse, Lever), remote job boards, and VC portfolio boards (three agents).");
     if(o.gmail)L.push(`- Gmail (read-only connector): search my inbox ${when} for job alerts, recruiter emails and referrals that name a specific role. Use the email only to find the role, then verify it on the employer's own posting. Lane: gmail.`);
     if(o.slack)L.push(`- Slack (read-only connector): read ${ch?"these channels ("+ch+")":"the channels where people share roles"} ${when} for posted roles and referrals. Verify each role on the employer's own posting. Lane: slack.`);
     if(oth)L.push(`- Other connectors (read-only): ${oth}. Look for roles posted ${when}. Verify each role on the employer's own posting. Lane: other.`);
-    src="Use one agent per source, in parallel. Each writes results/<lane>.tsv and role files into a new folder new-crawlN/ (fit_score_10 left empty; follow grading/CRAWL-BRIEF.md and the TSV header in tools/merge_crawl.py):\n"+L.join("\n")+"\nIf a connector is not connected, skip that source and tell me which one. In each role's notes, say where it was found (job board, Gmail or Slack).";
+    src="Use one agent per source, in parallel. Each writes results/<lane>.tsv and role files into a new folder new-crawlN/ (fit_score_10 left empty; follow grading/CRAWL-BRIEF.md, including its ## Condensed and ## Posting text sections in each role file, and the TSV header in tools/merge_crawl.py):\n"+L.join("\n")+"\nIf a connector is not connected, skip that source and tell me which one. In each role's notes, say where it was found (job board, Gmail or Slack).";
   }
   return [`In ${PROJECT}, run a new job crawl for roles posted or updated ${when}.`,
     `${CSV_RULE}`,
@@ -1852,6 +1921,7 @@ Tell me what changed.`}},
  {id:"check",where:"claude-code",title:"Check my setup",desc:"Confirms Claude Code can see the project and the tools it needs. It sends no personal data anywhere.",reads:"File names in the project folder",writes:"Nothing",steps:["Paste the prompt in a Claude Code session opened in the project folder."],
   prompt:`List the files in ${PROJECT} and confirm these exist: tracker.example.csv, tracker-app/build.py, tracker-app/template.html, tools/merge_crawl.py, grading/grade_v2.py, grading/rubric-v2.md. (tracker.csv and grading/profile.md are created by the setup prompts, so they may be missing.) Say which Claude connectors are available (Gmail in particular). Change nothing.`}
 ];
+TASKS.filter(x=>x.where==="claude-code"&&x.id!=="crawl").forEach(x=>{const d=Object.getOwnPropertyDescriptor(x,"prompt"),base=d&&d.get?()=>d.get.call(x):()=>d.value;Object.defineProperty(x,"prompt",{get:()=>withUpd(base()),configurable:true})});
 const taskTag=w=>w==="app"?`<span class="rtag app">In this page</span>`:`<span class="rtag cc">Runs in Claude Code</span>`;
 const GUIDES=[
  ["I want new jobs",[["crawl","claude-code"],["grade","claude-code"],["rebuild","claude-code"],["Open Listings and filter by Apply now or Consider.","app"]]],
@@ -1919,7 +1989,7 @@ addEventListener("resize",syncStickH);
   const close=f=>{if(m.hidden)return;m.hidden=true;btn.setAttribute("aria-expanded","false");if(f)btn.focus()};
   btn.addEventListener("click",()=>{if(m.hidden){m.hidden=false;btn.setAttribute("aria-expanded","true");const f=m.querySelector("button");if(f)f.focus()}else close(true)});
   document.addEventListener("click",e=>{if(!m.hidden&&!e.target.closest(".tb-menu"))close()});
-  m.addEventListener("click",e=>{if(e.target.closest("#onb-open,#pep-now"))close()});
+  m.addEventListener("click",e=>{if(e.target.closest("#onb-open"))close()});
   document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!m.hidden)close(true)});
 })();
 
@@ -2053,7 +2123,7 @@ POSTING
 Company: ${r.co}
 Title: ${r.title}
 Pay: ${r.pay||"not stated"} | Level: ${r.level||"not stated"} | Years asked: ${r.yrs||"not stated"} | Education: ${r.edu||"not stated"}
-${post?"Posting text pasted by the user:\n"+post.slice(0,9000):"Saved notes from the posting (not the full text):\n"+(r.post||"not available")}
+${post?"Posting text pasted by the user:\n"+post.slice(0,9000):(r.full?"Posting text saved when this role was crawled:\n"+r.full.slice(0,9000)+"\n\nCondensed notes:\n"+(r.post||""):"Saved notes from the posting (not the full text):\n"+(r.post||"not available"))}
 
 FORMAT
 {"headline":"...","summary":"...","exp":[${RESUME.exp.map((e,i)=>i===0?`{"id":"${e.id}","bullets":[{"src":"${e.id}1","text":"..."}]}`:`{"id":"${e.id}","bullets":[...]}`).join(",")}],"skills":[{"label":"${RESUME.skills[0]?RESUME.skills[0].label:"Skills"}","items":["..."]}],"keywords":{"matched":["..."],"missing":["..."]},"flags":[{"where":"...","note":"..."}]}`;
@@ -2264,7 +2334,7 @@ ROLE
 Company: ${r.co}
 Title: ${r.title}
 Pay: ${r.pay||"not stated"} | Level: ${r.level||"not stated"} | Years asked: ${r.yrs||"not stated"} | Education: ${r.edu||"not stated"}
-${co.post.trim()?"Posting text pasted by the user:\n"+co.post.trim().slice(0,9000):"Saved notes from the posting (not the full text):\n"+(r.post||"not available")}
+${co.post.trim()?"Posting text pasted by the user:\n"+co.post.trim().slice(0,9000):(r.full?"Posting text saved when this role was crawled:\n"+r.full.slice(0,9000)+"\n\nCondensed notes:\n"+(r.post||""):"Saved notes from the posting (not the full text):\n"+(r.post||"not available"))}
 Contact name: ${co.name.trim()||"not given"}
 ${pwho()}'s own reason for this company: ${co.why.trim()||"not given"}`;
 }
@@ -2429,7 +2499,7 @@ Title: ${r.title}
 Pay: ${r.pay||"not stated"} | Level: ${r.level||"not stated"} | Years asked: ${r.yrs||"not stated"} | Education: ${r.edu||"not stated"}
 Interview stage: ${ip.stage||"not specified"}
 Interview rounds on record: ${ivRoundsOf(r.id).map(e=>e.d+" "+e.t).join("; ")||"none"}
-${ip.post.trim()?"Posting text pasted by the user:\n"+ip.post.trim().slice(0,9000):"Saved notes from the posting (not the full text):\n"+(r.post||"not available")}
+${ip.post.trim()?"Posting text pasted by the user:\n"+ip.post.trim().slice(0,9000):(r.full?"Posting text saved when this role was crawled:\n"+r.full.slice(0,9000)+"\n\nCondensed notes:\n"+(r.post||""):"Saved notes from the posting (not the full text):\n"+(r.post||"not available"))}
 
 FORMAT
 {"questions":[{"q":"...","why":"...","angle":"..."}],"stories":[{"title":"...","source":"which résumé item","maps_to":"question or posting need","situation":"...","task":"...","action":"...","result":"..."}],"gaps":[{"gap":"...","answer":"..."}],"questions_to_ask":["..."]}`;
@@ -2559,7 +2629,8 @@ $("list").addEventListener("click",async e=>{
   state.custom=state.custom.filter(r=>r.id!==id);delete state.saved[id];removeDoc(id);state.mobDet=false;render();
 });
 $("a-st").innerHTML=STATUSES.map(([k,l])=>`<option value="${k}">${l}</option>`).join("");
-const addPrompt=r=>{
+const addPrompt=r=>withUpd(addPromptRaw(r));
+const addPromptRaw=r=>{
   const known=[r.src==="manual"&&r.co?"Company: "+r.co:"",r.src==="manual"&&r.title?"Title: "+r.title:"",r.url?"Link: "+r.url:"",r.pay?"Pay: "+r.pay:""].filter(Boolean).join("\n");
   const how=r.post?"Job description (pasted):\n"+r.post:r.url?"Fetch the posting from the link and read it in full. If the link cannot be read, tell me and stop.":"Use only the details above.";
   const ph=(r.src==="link"||r.src==="paste")?"I don't know the company or title: read them from the posting. ":"";
@@ -2652,7 +2723,6 @@ function pepTick(){
 }
 $("pep-on").checked=lsGet("jt-pep-on","1")!=="0";
 $("pep-on").addEventListener("change",e=>{lsSet("jt-pep-on",e.target.checked?"1":"0");if(e.target.checked&&!+lsGet("jt-pep-last","0"))lsSet("jt-pep-last",String(Date.now()))});
-$("pep-now").addEventListener("click",showPep);
 $("pep-x").addEventListener("click",()=>$("pep").close());
 $("pep-go").addEventListener("click",()=>$("pep").close());
 $("pep").addEventListener("click",e=>{if(e.target===$("pep"))$("pep").close()});
@@ -2702,7 +2772,8 @@ const onbCriteria=()=>{const a=onb.a;return [
   a.types.length&&"Employment: "+a.types.join(", "),
   a.avoid&&"Deal-breakers: "+a.avoid,
   a.start&&"Search started: "+a.start].filter(Boolean).join("\n")};
-const onbPrompts=()=>[
+const onbPrompts=()=>onbPromptsRaw().map(x=>({...x,p:withUpd(x.p)}));
+const onbPromptsRaw=()=>[
  {k:"p",t:"1. Tell Claude Code about you",n:"It interviews you, then writes your profile and grading rules.",
   p:`In ${PROJECT}, set up my job search profile. ${CSV_RULE} Ask me one question at a time to fill any gaps, then:
 1. Write profile/strengths.md and profile/role-families.md (start from profile/strengths.template.md and profile/role-families.template.md).
@@ -3042,6 +3113,61 @@ document.addEventListener("click",e=>{
   if(e.target.closest("[data-hcancel]")){chat.confirm=null;renderHist()}
 });
 initChat();
+
+/* ---------- version and update notice ---------- */
+const updatePrompt=()=>`In ${PROJECT}, update this tracker to the latest version${APP_BUILD&&APP_BUILD.latest?" ("+APP_BUILD.latest+")":""}.
+1. Run git status. If I have local changes to tracked files, stop and tell me which ones before doing anything else.
+2. Run git pull.
+3. Read CHANGELOG.md and tell me, in plain language, what is new in every version since ${APP_V||"my last build"}, not only the latest.
+4. Rebuild and republish the page: run python3 tracker-app/build.py tracker-app/dist/index.html and check the page script has no syntax errors. Then publish it as a private Artifact${PAGE_URL?", updating "+PAGE_URL+" so the link stays the same":" and tell me its link"}.
+5. If CHANGELOG.md lists steps under "Claude Code will offer to do this after you update" for those versions, list them and ask me: "Want me to do these now? (yes/no)". Only on a yes, do them.
+Never change tracker.csv, profile/, logs/ or grading/profile.md. Change files in roles/ only if I said yes in step 5, and only to add the sections that step describes.`;
+function renderVersion(){
+  const v=APP_V,b=(typeof APP_BUILD==="object"&&APP_BUILD)||{};
+  $("verl").textContent=v?"Version "+v:"";
+  const n=$("updn");
+  if(b.behind>0||(b.latest&&v&&b.latest!==v)){n.hidden=false;$("updv").textContent=b.latest?"Update available: "+b.latest:"Update available"}
+  else n.hidden=true;
+}
+function openUpd(){
+  const b=APP_BUILD||{},nt=b.notice||{};
+  $("updt").textContent=b.latest?"Version "+b.latest+" is available":"An update is available";
+  $("updlead").textContent="You have "+(APP_V||"an older version")+(b.latest?" and the repository has "+b.latest:" and your copy is behind the repository")+(nt.checked?". Claude Code checked on "+nt.checked:"")+".";
+  const ch=nt.changes&&nt.changes.length?nt.changes:["Claude Code has not read the details yet. Paste any prompt from this page into Claude Code and it will fetch them, or open the full changelog."];
+  $("updlist").innerHTML=ch.map(x=>`<li>${esc(x)}</li>`).join("");
+  const st=nt.steps||[];$("updstepsw").hidden=!st.length;$("updsteps").innerHTML=st.map(x=>`<li>${esc(x)}</li>`).join("");
+  if(!$("upd").open)$("upd").showModal();
+}
+$("updn").addEventListener("click",openUpd);
+$("updx").addEventListener("click",()=>$("upd").close());
+$("updno").addEventListener("click",()=>$("upd").close());
+$("updcopy").addEventListener("click",async e=>{const ok=await copyText(updatePrompt());const bt=e.target;bt.textContent=ok?"Copied. Paste it in Claude Code":"Press Ctrl+C";setTimeout(()=>{bt.textContent="Copy update prompt"},2600)});
+$("updgh").addEventListener("click",()=>{window.open("https://github.com/rivasme/feed-the-fam-tracker/blob/main/CHANGELOG.md","_blank","noopener,noreferrer")});
+renderVersion();
+
+/* ---------- return to where you were (after you paste a prompt into Claude Code and come back or reload) ---------- */
+const PLACE_KEY="jt-place";
+let placeT=null;
+function savePlace(){try{localStorage.setItem(PLACE_KEY,JSON.stringify({v:state.view,sel:state.sel,f:state.filter,t:state.tier,s:state.sort,q:state.q,m:!!state.mobDet,y:Math.round(window.scrollY||0),ts:Date.now()}))}catch(e){}}
+const savePlaceSoon=()=>{clearTimeout(placeT);placeT=setTimeout(savePlace,350)};
+let placeDone=false,placeData=null;
+function applyPlace(){
+  if(placeDone)return;
+  if(!placeData){try{placeData=JSON.parse(localStorage.getItem(PLACE_KEY)||"null")}catch(e){placeData=null}if(!placeData)return}
+  const p=placeData;
+  if(["overview","list","str","res","chat"].includes(p.v)&&p.v!=="chat"&&p.v!==state.view)setView(p.v);
+  if(typeof p.f==="string"&&/^[a-z]{2,12}$/.test(p.f))state.filter=p.f;
+  if(typeof p.t==="string"&&/^[0-9a-z]{1,12}$/.test(p.t))state.tier=p.t;
+  if(typeof p.s==="string"&&/^[a-z]{2,12}$/.test(p.s))state.sort=p.s;
+  if(typeof p.q==="string"){state.q=p.q.slice(0,120);$("q").value=state.q}
+  if(p.sel&&allRoles().some(r=>r.id===p.sel)){state.sel=p.sel;state.mobDet=!!p.m;placeDone=true}
+  else if(!p.sel)placeDone=true;
+  render();
+  if(p.y>0)requestAnimationFrame(()=>scrollTo(0,p.y));
+}
+["scroll","click","keyup"].forEach(ev=>addEventListener(ev,savePlaceSoon,{passive:true,capture:true}));
+["blur","pagehide"].forEach(ev=>addEventListener(ev,savePlace));
+document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="hidden")savePlace()});
 
 init();
 </script>
