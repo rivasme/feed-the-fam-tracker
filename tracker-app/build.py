@@ -29,6 +29,15 @@ def app_info():
         info["v"] = open(os.path.join(CODE_ROOT, "VERSION"), encoding="utf-8").read().strip()[:20]
     except OSError:
         pass
+    # the notice Claude Code wrote with tools/check_update.py (newer than this copy, or it is ignored)
+    try:
+        n = json.load(open(os.path.join(ROOT, "logs", "update-notice.json"), encoding="utf-8"))
+        vt = lambda s: tuple(int(x) for x in re.findall(r"\d+", str(s))[:3])
+        if n.get("update") and info["v"] and vt(n.get("latest", "")) > vt(info["v"]):
+            lst = lambda k, m: [str(x)[:300] for x in (n.get(k) or []) if isinstance(x, str)][:m]
+            info.update(latest=str(n["latest"])[:20], notice={"checked": str(n.get("checked", ""))[:10], "changes": lst("changes", 12), "steps": lst("steps", 8)})
+    except (OSError, ValueError, AttributeError):
+        pass
     if os.environ.get("FTF_NO_UPDATE_CHECK") or not os.path.isdir(os.path.join(CODE_ROOT, ".git")):
         return info
     try:

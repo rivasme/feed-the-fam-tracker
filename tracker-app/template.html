@@ -781,10 +781,14 @@ dialog#crawl{width:min(580px,calc(100vw - 32px));max-height:calc(100dvh - 32px);
 /* version and update notice (side nav bottom) */
 .verbox{display:flex;flex-direction:column;gap:8px;font-size:12px;color:var(--muted-foreground)}
 .verl{font-family:var(--font-data);font-size:11px}
-.updn{display:flex;flex-direction:column;gap:6px;align-items:flex-start;border:1px solid color-mix(in srgb,var(--c-applied) 45%,var(--border));background:color-mix(in srgb,var(--c-applied) 10%,transparent);border-radius:12px;padding:10px 12px;color:var(--foreground)}
-.updn[hidden]{display:none}
-.updn b{font-size:13px}.updn span{font-size:12px;color:var(--muted-foreground)}
-.updn .btn{height:28px;padding:0 10px;font-size:12px}
+.updbtn{height:auto;min-height:30px;padding:5px 10px;font-size:12px;font-weight:600;justify-content:flex-start;gap:8px;text-align:left;border-color:color-mix(in srgb,var(--c-applied) 50%,var(--border));background:color-mix(in srgb,var(--c-applied) 12%,transparent);color:var(--foreground)}
+.updbtn[hidden]{display:none}
+.updbtn i{width:7px;height:7px;border-radius:50%;background:var(--c-applied);flex:none}
+dialog#upd{width:min(560px,calc(100vw - 32px));max-height:calc(100dvh - 32px);overflow:auto}
+#upd ul,#upd ol{margin:6px 0 0;padding-left:20px;display:flex;flex-direction:column;gap:5px;font-size:14px}
+#upd h3{margin:16px 0 0;font-size:var(--fs-h3);font-weight:600}
+#upd .cq-foot{flex-wrap:wrap;justify-content:flex-end}#upd .cq-foot .grow{flex:1 1 100%}
+#upd .lead{margin:0;font-size:14px;color:var(--muted-foreground)}
 .lnk{background:none;border:0;padding:0;font:inherit;font-size:12px;color:var(--muted-foreground);text-decoration:underline;cursor:pointer}
 .lnk:hover{color:var(--foreground)}
 .mi-sw{display:flex;align-items:center;gap:8px;padding:6px 10px;font-size:13px;color:var(--foreground);cursor:pointer}
@@ -811,7 +815,7 @@ dialog#crawl{width:min(580px,calc(100vw - 32px));max-height:calc(100dvh - 32px);
     </div>
     <div class="side-foot">
       <span class="conns" id="conns" role="group" aria-label="Connections" hidden></span><span id="ivcnt" hidden></span>
-      <div class="verbox" id="verbox"><div class="updn" id="updn" hidden><b>Update available</b><span id="updv"></span><button class="btn pri" type="button" id="updcopy">Copy update prompt</button><button class="lnk" type="button" id="updwhat">What's new</button></div><span class="verl" id="verl"></span></div>
+      <div class="verbox" id="verbox"><span class="verl" id="verl"></span><button class="btn updbtn" type="button" id="updn" hidden aria-haspopup="dialog"><i></i><span id="updv"></span></button></div>
     </div>
   </aside>
   <div class="content">
@@ -921,6 +925,16 @@ dialog#crawl{width:min(580px,calc(100vw - 32px));max-height:calc(100dvh - 32px);
   </div>
 </dialog>
 
+<dialog id="upd" aria-labelledby="updt">
+  <div class="sh2" style="padding:0 0 8px"><h2 id="updt">Update available</h2><button class="btn ghost" type="button" id="updx">Close</button></div>
+  <p class="lead" id="updlead"></p>
+  <h3>What's new</h3><ul id="updlist"></ul>
+  <div id="updstepsw" hidden><h3>After you update</h3><ul id="updsteps"></ul></div>
+  <h3>How to update</h3>
+  <ol><li>Click <b>Copy update prompt</b> below.</li><li>Open Claude Code in your project folder and paste it. Press Enter.</li><li>Claude Code pulls the new version, tells you what changed, rebuilds the page and gives you the link. Open it and reload.</li></ol>
+  <p class="cq-lede" style="margin:12px 0 0">Your roles, grades, profile and logs are not touched. Claude Code stops and asks first if you edited any tracked file.</p>
+  <div class="cq-foot"><div class="grow"><button class="linkbtn" type="button" data-ccg="1">New to Claude Code?</button><button class="linkbtn" type="button" id="updgh">Full changelog on GitHub</button></div><button class="btn" type="button" id="updno">Not now</button><button class="btn pri" type="button" id="updcopy">Copy update prompt</button></div>
+</dialog>
 <dialog id="crawl" aria-labelledby="crt">
   <div class="sh2" style="padding:0 0 8px"><h2 id="crt">Crawl for new roles</h2><button class="btn ghost" type="button" id="crx">Close</button></div>
   <p class="cq-lede">Claude Code does the searching. This page can't run it, so copy the prompt and paste it into Claude Code opened in your project folder. The prompt tells it to only read: nothing is sent, posted or applied. A source that isn't connected is skipped.</p>
@@ -1029,7 +1043,7 @@ function normResume(d){
 }
 const PROJECT="the project folder";
 const APP_V=(typeof APP_BUILD==="object"&&APP_BUILD&&APP_BUILD.v)||"";
-const UPD_STEP=()=>`First, a read-only update check for this tracker${APP_V?" (this page was built from version "+APP_V+")":""}: run git fetch and git status -sb in the project folder and read the VERSION file. If the folder is behind its origin${APP_V?", or the VERSION file is newer than "+APP_V:""}, show me the new entries in CHANGELOG.md and ask whether to run git pull and rebuild the page before you continue. Do not pull or change any file for this check without my yes. If git is not set up or the check fails, say so in one line and carry on. Then do the task below.\n\n`;
+const UPD_STEP=()=>`First, check whether this tracker has an update (read-only apart from one notice file): run python3 tools/check_update.py in the project folder. It compares the VERSION file${APP_V?" (this page was built from version "+APP_V+")":""} with the repository and writes logs/update-notice.json. Tell me its one-line answer in plain words: an update is available (from which version to which) or it is up to date. If an update is available, show me the what-is-new lines it found, say the update note will appear under the version in the page's side nav after the next rebuild, and ask whether I want to update now. Do not run git pull or change any other file for this check without my yes, and carry on with the task below either way. If the script is missing or fails, say so in one line and carry on.\n\n`;
 const withUpd=x=>UPD_STEP()+x;
 const CSV_RULE="If tracker.csv does not exist, copy tracker.example.csv to tracker.csv first (tracker.csv is your own file and is never committed).";
 let RESUME=emptyResume(),_mv=null,SS="";
@@ -3110,11 +3124,23 @@ function renderVersion(){
   const v=APP_V,b=(typeof APP_BUILD==="object"&&APP_BUILD)||{};
   $("verl").textContent=v?"Version "+v:"";
   const n=$("updn");
-  if(b.behind>0||(b.latest&&v&&b.latest!==v)){n.hidden=false;$("updv").textContent=b.latest?"Version "+b.latest+" is out. You have "+v+".":"Your copy is behind the repository."}
+  if(b.behind>0||(b.latest&&v&&b.latest!==v)){n.hidden=false;$("updv").textContent=b.latest?"Update available: "+b.latest:"Update available"}
   else n.hidden=true;
 }
-$("updcopy").addEventListener("click",async e=>{const ok=await copyText(updatePrompt());const bt=e.target;bt.textContent=ok?"Copied. Paste it in Claude Code":"Press Ctrl+C";setTimeout(()=>{bt.textContent="Copy update prompt"},2400)});
-$("updwhat").addEventListener("click",()=>{window.open("https://github.com/rivasme/feed-the-fam-tracker/blob/main/CHANGELOG.md","_blank","noopener,noreferrer")});
+function openUpd(){
+  const b=APP_BUILD||{},nt=b.notice||{};
+  $("updt").textContent=b.latest?"Version "+b.latest+" is available":"An update is available";
+  $("updlead").textContent="You have "+(APP_V||"an older version")+(b.latest?" and the repository has "+b.latest:" and your copy is behind the repository")+(nt.checked?". Claude Code checked on "+nt.checked:"")+".";
+  const ch=nt.changes&&nt.changes.length?nt.changes:["Claude Code has not read the details yet. Paste any prompt from this page into Claude Code and it will fetch them, or open the full changelog."];
+  $("updlist").innerHTML=ch.map(x=>`<li>${esc(x)}</li>`).join("");
+  const st=nt.steps||[];$("updstepsw").hidden=!st.length;$("updsteps").innerHTML=st.map(x=>`<li>${esc(x)}</li>`).join("");
+  if(!$("upd").open)$("upd").showModal();
+}
+$("updn").addEventListener("click",openUpd);
+$("updx").addEventListener("click",()=>$("upd").close());
+$("updno").addEventListener("click",()=>$("upd").close());
+$("updcopy").addEventListener("click",async e=>{const ok=await copyText(updatePrompt());const bt=e.target;bt.textContent=ok?"Copied. Paste it in Claude Code":"Press Ctrl+C";setTimeout(()=>{bt.textContent="Copy update prompt"},2600)});
+$("updgh").addEventListener("click",()=>{window.open("https://github.com/rivasme/feed-the-fam-tracker/blob/main/CHANGELOG.md","_blank","noopener,noreferrer")});
 renderVersion();
 
 /* ---------- return to where you were (after you paste a prompt into Claude Code and come back or reload) ---------- */

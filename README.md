@@ -65,9 +65,9 @@ Your tracker is a copy of this repository, so it does not update by itself.
 3. Read `CHANGELOG.md` for what changed and any step for your existing roles.
 
 **How you find out there is an update**
-- The bottom of the side nav shows your version. If your copy is behind when the page is built, an **Update available** note appears there with a **Copy update prompt** button. Paste that prompt into Claude Code and it pulls, explains what is new, and rebuilds.
-- Every prompt you paste into Claude Code starts with a read-only update check. It never pulls or changes a file without your yes.
-- `build.py` prints a notice when you are behind.
+- Every prompt you paste into Claude Code starts with an update check: Claude runs `python3 tools/check_update.py`, which compares your `VERSION` with the repository and tells you in one line whether an update is available. It never pulls or changes anything else without your yes.
+- When there is an update, the check writes `logs/update-notice.json` (what is new, copied from `CHANGELOG.md`). The next time the page is rebuilt, an **Update available** button appears under the version at the bottom of the side nav. Click it to read what is new, then **Copy update prompt** and paste it into Claude Code. That prompt pulls the new version, explains what changed, and rebuilds the page.
+- `build.py` also prints a notice when you are behind.
 - On GitHub, choose Watch, then Custom, then Releases to get an email for each release.
 
 The page only knows your update status as of its last build. Your roles, grades, profile and logs are not tracked by git, so an update never overwrites them.
