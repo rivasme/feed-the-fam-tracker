@@ -35,16 +35,18 @@ def entries(changelog, current):
         v = re.match(r"\s*v?(\d+\.\d+(?:\.\d+)?)", head)
         if not v or vt(v.group(1)) <= vt(current):
             continue
-        changes, steps, into = [], [], None
+        changes, steps, manual, into = [], [], [], None
         for ln in body.split("\n"):
             s = ln.strip()
             if re.match(r"\*\*what changed", s, re.I):
                 into = changes
-            elif re.match(r"\*\*do this", s, re.I):
+            elif re.match(r"\*\*(do this|claude code will offer)", s, re.I):
                 into = steps
+            elif re.match(r"\*\*if you update by hand", s, re.I):
+                into = manual
             elif re.match(r"(?:[-*]|\d+\.)\s+", s) and into is not None:
                 into.append(clean(re.sub(r"^(?:[-*]|\d+\.)\s+", "", s)))
-        out.append((v.group(1), changes, steps))
+        out.append((v.group(1), changes, steps))  # manual steps are for people who skip the update prompt, so the page does not show them
     return out
 
 

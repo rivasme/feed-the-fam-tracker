@@ -1,6 +1,6 @@
 # Changelog
 
-Newest first. To update your copy, see "Updating" in the README: `git pull`, then rebuild and republish the page.
+Newest first. To update your copy, see "Updating" in the README. Each version has three lists: what changed, what Claude Code will offer to do for you after you update, and what to do if you update by hand.
 
 ## 1.1.0
 
@@ -13,9 +13,11 @@ Newest first. To update your copy, see "Updating" in the README: `git pull`, the
 - **The page remembers where you were** (screen, role, filters, scroll) and puts you back after you come back from Claude Code or the page reloads.
 - **Each crawled role is saved as a condensed summary plus the full posting.** Regrade, résumé tailoring, letters and interview prep now use them.
 
-**Do this after you update**
+**Claude Code will offer to do this after you update**
+- Add a short summary to each older role file that lacks one, so Regrade, résumé tailoring and letters work as well on old roles as on new ones.
+
+**If you update by hand (not with the Copy update prompt)**
 1. `git pull`, then rebuild and republish the page.
-2. Roles crawled before this version have no condensed summary. They keep working (the page falls back to the saved notes). To add summaries to older roles, ask Claude Code: "For each role file without a Condensed section, fetch the posting and add one, following grading/CRAWL-BRIEF.md."
 
 ## 1.0.0
 

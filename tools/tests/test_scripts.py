@@ -100,7 +100,7 @@ env2 = {k: v for k, v in os.environ.items() if k != "FTF_ROOT"}
 r = subprocess.run(cu, capture_output=True, text=True, env=env2)
 check("check_update says up to date and writes update:false", "UP TO DATE 1.0.0" in r.stdout and json.load(open(os.path.join(clone, "logs", "update-notice.json")))["update"] is False, r.stdout + r.stderr)
 open(os.path.join(work, "VERSION"), "w").write("1.1.0\n")
-open(os.path.join(work, "CHANGELOG.md"), "w").write("# Changelog\n\n## 1.1.0\n\n**What changed for you**\n- **Big thing.** It is better now.\n- Small thing.\n\n**Do this after you update**\n1. Rebuild the page.\n\n## 1.0.0\n\nFirst release.\n")
+open(os.path.join(work, "CHANGELOG.md"), "w").write("# Changelog\n\n## 1.1.0\n\n**What changed for you**\n- **Big thing.** It is better now.\n- Small thing.\n\n**Claude Code will offer to do this after you update**\n- Rebuild the page.\n\n**If you update by hand**\n1. Pull it yourself.\n\n## 1.0.0\n\nFirst release.\n")
 sh("git", "add", "-A", cwd=work); sh("git", "commit", "-q", "-m", "v1.1", cwd=work); sh("git", "push", "-q", "origin", "main", cwd=work)
 r = subprocess.run(cu, capture_output=True, text=True, env=env2)
 n = json.load(open(os.path.join(clone, "logs", "update-notice.json")))
@@ -111,6 +111,16 @@ shutil.copy(os.path.join(REPO, "tracker-app", "build.py"), os.path.join(clone, "
 r = subprocess.run([sys.executable, os.path.join(clone, "tracker-app", "build.py"), os.path.join(ud, "p.html")], capture_output=True, text=True, env=dict(env2, FTF_NO_UPDATE_CHECK="1"))
 ph = open(os.path.join(ud, "p.html")).read() if os.path.exists(os.path.join(ud, "p.html")) else ""
 check("build.py bakes the notice into the page", r.returncode == 0 and '"latest": "1.1.0"' in ph and "Big thing. It is better now." in ph, r.stdout + r.stderr)
+
+open(os.path.join(work, "VERSION"), "w").write("1.2.0\n")
+cl = open(os.path.join(work, "CHANGELOG.md")).read()
+newest = "# Changelog\n\n## 1.2.0\n\n**What changed for you**\n- Newest thing.\n\n**Claude Code will offer to do this after you update**\n- Newest step.\n\n## 1.1.1\n\n**What changed for you**\n- Patch fix.\n\n"
+open(os.path.join(work, "CHANGELOG.md"), "w").write(newest + cl[cl.index("## 1.1.0"):])
+sh("git", "add", "-A", cwd=work); sh("git", "commit", "-q", "-m", "v1.2", cwd=work); sh("git", "push", "-q", "origin", "main", cwd=work)
+open(os.path.join(clone, "VERSION"), "w").write("1.0.0\n")
+r = subprocess.run(cu, capture_output=True, text=True, env=env2)
+n = json.load(open(os.path.join(clone, "logs", "update-notice.json")))
+check("skipping versions: the notice includes every version since yours, not only the latest", "1.0.0 -> 1.2.0" in r.stdout and n["changes"][:2] == ["Newest thing.", "Patch fix."] and "Big thing. It is better now." in n["changes"] and "Newest step." in n["steps"] and not any("by hand" in x for x in n["steps"]), json.dumps(n))
 os.remove(os.path.join(clone, "VERSION")); r = subprocess.run(cu, capture_output=True, text=True, env=env2)
 check("check_update says it could not check when VERSION is missing", "COULD NOT CHECK" in r.stdout, r.stdout)
 

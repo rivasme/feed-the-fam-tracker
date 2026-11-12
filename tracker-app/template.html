@@ -781,9 +781,10 @@ dialog#crawl{width:min(580px,calc(100vw - 32px));max-height:calc(100dvh - 32px);
 /* version and update notice (side nav bottom) */
 .verbox{display:flex;flex-direction:column;gap:8px;font-size:12px;color:var(--muted-foreground)}
 .verl{font-family:var(--font-data);font-size:11px}
-.updbtn{height:auto;min-height:30px;padding:5px 10px;font-size:12px;font-weight:600;justify-content:flex-start;gap:8px;text-align:left;border-color:color-mix(in srgb,var(--c-applied) 50%,var(--border));background:color-mix(in srgb,var(--c-applied) 12%,transparent);color:var(--foreground)}
+.updbtn{height:auto;min-height:28px;padding:4px 8px;margin-left:-8px;font-size:12px;font-weight:600;justify-content:flex-start;gap:7px;text-align:left;color:var(--c-applied)}
+.updbtn:hover{background:color-mix(in srgb,var(--c-applied) 12%,transparent);color:var(--c-applied)}
+.updbtn svg{width:15px;height:15px;flex:none}
 .updbtn[hidden]{display:none}
-.updbtn i{width:7px;height:7px;border-radius:50%;background:var(--c-applied);flex:none}
 dialog#upd{width:min(560px,calc(100vw - 32px));max-height:calc(100dvh - 32px);overflow:auto}
 #upd ul,#upd ol{margin:6px 0 0;padding-left:20px;display:flex;flex-direction:column;gap:5px;font-size:14px}
 #upd h3{margin:16px 0 0;font-size:var(--fs-h3);font-weight:600}
@@ -815,7 +816,7 @@ dialog#upd{width:min(560px,calc(100vw - 32px));max-height:calc(100dvh - 32px);ov
     </div>
     <div class="side-foot">
       <span class="conns" id="conns" role="group" aria-label="Connections" hidden></span><span id="ivcnt" hidden></span>
-      <div class="verbox" id="verbox"><span class="verl" id="verl"></span><button class="btn updbtn" type="button" id="updn" hidden aria-haspopup="dialog"><i></i><span id="updv"></span></button></div>
+      <div class="verbox" id="verbox"><span class="verl" id="verl"></span><button class="btn ghost updbtn" type="button" id="updn" hidden aria-haspopup="dialog"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a9 9 0 1 1-2.64-6.36"/><path d="M21 4v5h-5"/><path d="M12 8v5m0-5-2 2m2-2 2 2"/></svg><span id="updv"></span></button></div>
     </div>
   </aside>
   <div class="content">
@@ -929,7 +930,7 @@ dialog#upd{width:min(560px,calc(100vw - 32px));max-height:calc(100dvh - 32px);ov
   <div class="sh2" style="padding:0 0 8px"><h2 id="updt">Update available</h2><button class="btn ghost" type="button" id="updx">Close</button></div>
   <p class="lead" id="updlead"></p>
   <h3>What's new</h3><ul id="updlist"></ul>
-  <div id="updstepsw" hidden><h3>After you update</h3><ul id="updsteps"></ul></div>
+  <div id="updstepsw" hidden><h3>Claude Code will also offer to</h3><ul id="updsteps"></ul></div>
   <h3>How to update</h3>
   <ol><li>Click <b>Copy update prompt</b> below.</li><li>Open Claude Code in your project folder and paste it. Press Enter.</li><li>Claude Code pulls the new version, tells you what changed, rebuilds the page and gives you the link. Open it and reload.</li></ol>
   <p class="cq-lede" style="margin:12px 0 0">Your roles, grades, profile and logs are not touched. Claude Code stops and asks first if you edited any tracked file.</p>
@@ -3117,9 +3118,10 @@ initChat();
 const updatePrompt=()=>`In ${PROJECT}, update this tracker to the latest version${APP_BUILD&&APP_BUILD.latest?" ("+APP_BUILD.latest+")":""}.
 1. Run git status. If I have local changes to tracked files, stop and tell me which ones before doing anything else.
 2. Run git pull.
-3. Read CHANGELOG.md and tell me, in plain language, what is new since version ${APP_V||"my last build"}. If the changelog mentions a step for existing roles, tell me what it is.
+3. Read CHANGELOG.md and tell me, in plain language, what is new in every version since ${APP_V||"my last build"}, not only the latest.
 4. Rebuild and republish the page: run python3 tracker-app/build.py tracker-app/dist/index.html and check the page script has no syntax errors. Then publish it as a private Artifact${PAGE_URL?", updating "+PAGE_URL+" so the link stays the same":" and tell me its link"}.
-Do not change tracker.csv, roles/, logs/, profile/ or grading/profile.md.`;
+5. If CHANGELOG.md lists steps under "Claude Code will offer to do this after you update" for those versions, list them and ask me: "Want me to do these now? (yes/no)". Only on a yes, do them.
+Never change tracker.csv, profile/, logs/ or grading/profile.md. Change files in roles/ only if I said yes in step 5, and only to add the sections that step describes.`;
 function renderVersion(){
   const v=APP_V,b=(typeof APP_BUILD==="object"&&APP_BUILD)||{};
   $("verl").textContent=v?"Version "+v:"";

@@ -16,4 +16,4 @@ Written by `python3 tools/check_update.py` (Claude Code runs it at the start of 
 
 - `update` is `false` when you are current; the page then shows nothing but the version.
 - The page ignores a notice whose `latest` is not newer than your `VERSION`, so it clears itself after you update.
-- `changes` and `steps` come from the "What changed for you" and "Do this after you update" lists in `CHANGELOG.md`.
+- `changes` comes from the "What changed for you" list and `steps` from the "Claude Code will offer to do this after you update" list in `CHANGELOG.md`, for every version newer than yours (not only the latest). The "If you update by hand" list is not copied; it is for people who skip the update prompt.
